@@ -1,0 +1,7 @@
+name: Scaffoldpvp
+version: '${project.version}'
+main: hobby.servah.scaffoldpvp.Scaffoldpvp
+api-version: 1.19
+commands:
+  leave:
+  duel:
