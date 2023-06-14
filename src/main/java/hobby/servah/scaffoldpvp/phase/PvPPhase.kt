@@ -62,7 +62,6 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
     @EventHandler
     fun onItemDrop(e: PlayerDropItemEvent) {
         if(e.player.world != world) return
-        //if(e.player.hasPermission("pvp.doshit")) return
         e.isCancelled = true
     }
 
@@ -84,14 +83,6 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
     fun onDeath(e: PlayerDeathEvent){
         if(e.player.world != world) return
         e.drops.clear()
-        //logging
-        //e.player.sendMessage("drops cleared")
-
-        //TODO USE? NO
-        //e.itemsToKeep =
-
-        //logging
-        //Bukkit.broadcast(Component.text("moin2"))
         val list = world.players
         list.remove(e.player)
         for(p in list) p.showTitle(Title.title(Component.text("You won!").color(NamedTextColor.GREEN), Component.text("Your opponent died!").color(NamedTextColor.BLUE)))
@@ -100,39 +91,15 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
     fun onRespawn(e: PlayerRespawnEvent){
         if(e.player.world != world) return
         e.player.showTitle(Title.title(Component.text("You died").color(NamedTextColor.RED), Component.text("You lost the fight!").color(NamedTextColor.BLUE)))
-        //logging
-        //Bukkit.broadcast(Component.text("moin3"))
-        //phaseManager.changePhase(StartingPhase(plugin, world, utils, phaseManager), plugin!!)
 
-
-
-        //einfach nur zum Testen, weil der spieler grad nichts nach dem tod bekommt, funktioniert hier vielleicht nicht wegen phase change
-        //e.player.inventory.addItem(ItemStack(Material.WARPED_FUNGUS))
-        //wieso muss das hier sein häääääääää
-        //Utils.setupPlayer(plugin, e.player)
-        //logging
-        //e.player.sendMessage(Bukkit.getOnlinePlayers().size.toString())
-        //logging
-        //e.player.sendMessage("hi2")
-        //e.player.sendMessage(Bukkit.getOnlinePlayers().size.toString())
-        //for(p in Bukkit.getOnlinePlayers()) p.sendMessage("hi")
 
         //TODO eigentliches play again und leave features noch adden
         object : BukkitRunnable() {
             override fun run() {
-                //logging
-                //Bukkit.broadcast(Component.text("moin6"))
-                //logging
-                //Bukkit.broadcast(Component.text(world.playerCount))
                 val list = world.players
                 list.add(e.player)
                 for(p in list){
-                    //logging
-                    //Bukkit.broadcast(Component.text("moin7"))
-                    //utils.setupPlayer(plugin!!, p)
-
                     p.inventory.clear()
-                    p.gameMode = GameMode.ADVENTURE
                     val leave = ItemStack(Material.BARRIER)
                     val leaveMeta = leave.itemMeta
                     leaveMeta.isUnbreakable = true //einfach so
@@ -145,8 +112,6 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
                     playAgain.itemMeta = playAgainMeta
                     p.inventory.setItem(8, leave)
                     p.inventory.setItem(0, playAgain)
-                    //logging
-                    //Bukkit.broadcast(Component.text("moin5"))
 
                     Utils.playerLeaveDuelWorld(world, p)
                 }
@@ -157,15 +122,8 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
     }
     @EventHandler
     fun leave(e: PlayerQuitEvent){
-        //logging
-        //Bukkit.broadcast(Component.text("moin4"))
         val list = world.players
-        //logging
-        //Bukkit.broadcast(Component.text(list.toString()))
-        //list.remove(e.player)
         for(p in list){
-            //logging
-            //Bukkit.broadcast(Component.text("moin8"))
             p.showTitle(Title.title(Component.text("You won!").color(NamedTextColor.GREEN), Component.text("Your opponent died!").color(NamedTextColor.BLUE)))
             Utils.playerLeaveDuelWorld(world, p)
         }

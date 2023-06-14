@@ -11,7 +11,6 @@ import org.bukkit.scheduler.BukkitRunnable
 class CountdownRunnable(private val plugin : Scaffoldpvp, private val world : World, private val utils: Utils, private val phaseManager: PhaseManager) : BukkitRunnable() {
     private var seconds = 5
     override fun run() {
-        //Bukkit.broadcast(Component.text("running"))
         if(seconds <= 0){
             for (p in Bukkit.getOnlinePlayers()) p.showTitle(Title.title(Component.text("FIGHT").color(NamedTextColor.RED),
                 Component.text("Eliminate your opponent!").color(NamedTextColor.BLUE)))

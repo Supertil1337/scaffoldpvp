@@ -23,48 +23,14 @@ import org.bukkit.scheduler.BukkitRunnable
 
 
 class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private val utils: Utils, private val phaseManager: PhaseManager) : Phase(plugin){
-    //private var task: BukkitTask
+
     init {
         utils.firstSpawn = true
-        for (p in Bukkit.getOnlinePlayers()) utils.setupPlayer(plugin!!, p)
-        //REMOVE BECAUSE wer will das
-        //Bukkit.broadcast(Component.text("Initializing Starting Phase!").color(NamedTextColor.BLUE))
-        //task = Bukkit.getScheduler().runTaskTimer(plugin, CountdownRunnable(plugin), 0, 20)
-        //funktioniert nicht so richtig, möglicherweise nur bei respawn???
-        //task = CountdownRunnable(plugin!!, world, utils, phaseManager).runTaskTimer(plugin, 0, 20)
-        //nur test
-        /*val task2: BukkitTask = Bukkit.getScheduler().runTaskTimer(plugin, Runnable(){
-            Bukkit.broadcast(Component.text("moin"))
-        }, 0L, 20L)
+        for (p in world.players) utils.setupPlayer(plugin!!, p)
 
-         */
-        /*val task3: BukkitTask = Bukkit.getScheduler().runTaskTimer(plugin, Runnable() {
-            var seconds = 5
-            Bukkit.broadcast(Component.text("running"))
-            if(seconds <= 0){
-                for (p in Bukkit.getOnlinePlayers()) p.showTitle(
-                    Title.title(Component.text("FIGHT", NamedTextColor.RED),
-                    Component.text("Eliminate your opponent!", NamedTextColor.BLUE)))
-                phaseManager.changePhase(PvPPhase(plugin, world, utils, phaseManager), plugin)
-                //this.cancel()
-
-
-                return
-            }
-            for(p in Bukkit.getOnlinePlayers()){
-                p.showTitle(
-                    Title.title(Component.text("GET READY", NamedTextColor.RED),
-                    Component.text("$seconds seconds remain", NamedTextColor.BLUE)))
-            }
-            seconds--
-        }, 0L, 20L)
-
-         */
         object : BukkitRunnable() {
             private var seconds = 5
             override fun run() {
-                //logging
-                //Bukkit.broadcast(Component.text("running"))
                 if(seconds <= 0){
                     for (p in Bukkit.getOnlinePlayers()) p.showTitle(
                         Title.title(Component.text("FIGHT").color(NamedTextColor.RED),
@@ -82,10 +48,6 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
                 seconds--
             }
         }.runTaskTimer(plugin!!, 0L, 20L)
-
-
-        //Bukkit.broadcast(Component.text(plugin.name))
-        //Bukkit.broadcast(Component.text("running2"))
     }
 
     override fun disable() {
@@ -102,7 +64,7 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
     }
 
 
-    //vielleicht woandershin verschieben, wird ja auch noch in PVP Phase benutzt(war für setupPlayer()), ist erledigt
+
 
 
     @EventHandler
@@ -120,7 +82,6 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
     @EventHandler
     fun onPickUp(e : PlayerAttemptPickupItemEvent) {
         if(e.player.world != world) return
-        //if(e.player.hasPermission("pvp.doshit")) return
         e.item.remove()
         e.isCancelled = true
     }
@@ -128,7 +89,6 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
     @EventHandler
     fun onBlockBreak(e : BlockBreakEvent) {
         if(e.player.world != world) return
-        //if(e.player.hasPermission("pvp.doshit")) return
         e.isCancelled = true
     }
 
@@ -141,14 +101,12 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
     @EventHandler
     fun onBlockPlace(e: BlockPlaceEvent) {
         if(e.player.world != world) return
-        //if(e.player.hasPermission("pvp.doshit")) return
         e.isCancelled = true
     }
 
     @EventHandler
     fun onItemDrop(e: PlayerDropItemEvent) {
         if(e.player.world != world) return
-        //if(e.player.hasPermission("pvp.doshit")) return
         e.isCancelled = true
     }
 
@@ -173,7 +131,6 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
     @EventHandler
     fun onMove(e: PlayerMoveEvent){
         if(e.player.world != world) return
-        //if(e.player.hasPermission("pvp.doshit")) return
         e.isCancelled = true
     }
 }

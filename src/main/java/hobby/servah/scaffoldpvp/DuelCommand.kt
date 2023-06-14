@@ -32,50 +32,6 @@ class DuelCommand(val plugin: Scaffoldpvp) : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
         if (sender !is Player) return false
 
-        /*if((args?.size == 2)){
-            if(args[0] == "accept"){
-                val p: Player? = Bukkit.getPlayer(args[1])
-                if (p == null) {
-                    sender.sendMessage(Component.text("den gibts nich, pass ma beim schreiben besser auf").color(NamedTextColor.RED))
-                    return false
-                }
-                if(duelRequests[p.uniqueId] == sender.uniqueId){
-                    p.sendMessage(Component.text(sender.name + " hat deine Anfrage angenommen!").color(NamedTextColor.BLUE))
-                    duelRequests[p.uniqueId] = null
-                    //ab in die runde(von JoinQueueCommand gecopiet)
-                    try {
-                        val sourceDirectory = File("ScaffoldPvP")
-                        val destinationDirectory = File("Duel")
-                        FileUtils.copyDirectory(sourceDirectory, destinationDirectory)
-                    }
-                    catch (e: IOException){
-                        e.printStackTrace();
-                    }
-
-
-                    val newWorld = Bukkit.createWorld(WorldCreator("Duel"))
-                    if(newWorld == null){
-                        sender.sendMessage("joo dat is null");
-                        return false
-                    }
-                    val spawnLocation: Location = newWorld.spawnLocation;
-                    sender.teleport(spawnLocation);
-
-
-                    //PhaseManager übernimmt
-                    phaseManagers[newWorld.name] = PhaseManager(plugin, newWorld)
-
-
-                    return false
-                }
-                else{
-                    sender.sendMessage(Component.text("Du hast keine Anfrage von " + p.name).color(NamedTextColor.RED))
-                    return false
-                }
-            }
-        }
-
-         */
         if (args?.size != 1) {
             sender.sendMessage(Component.text("FREUNDCHEN, so geht das aber nicht!!!").color(NamedTextColor.RED))
             return false

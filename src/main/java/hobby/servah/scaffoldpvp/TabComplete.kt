@@ -1,4 +1,4 @@
-package hobby.servah.scaffoldpvp.phase
+package hobby.servah.scaffoldpvp
 
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
