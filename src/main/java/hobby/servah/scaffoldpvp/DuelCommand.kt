@@ -16,6 +16,7 @@ import org.bukkit.util.StringUtil
 import java.io.File
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -45,7 +46,7 @@ class DuelCommand(val plugin: Scaffoldpvp) : CommandExecutor {
         if(duelRequests[p.uniqueId] == sender.uniqueId){
             p.sendMessage(Component.text(sender.name + " hat deine Anfrage angenommen!").color(NamedTextColor.BLUE))
             duelRequests[p.uniqueId] = null
-            //ab in die runde(von JoinQueueCommand gecopiet)
+            //ab in die runde (von JoinQueueCommand gecopiet)
             try {
                 val sourceDirectory = File("ScaffoldPvP")
                 val destinationDirectory = File("Duel")
@@ -61,12 +62,12 @@ class DuelCommand(val plugin: Scaffoldpvp) : CommandExecutor {
                 sender.sendMessage("joo dat is null");
                 return false
             }
-            val spawnLocation: Location = newWorld.spawnLocation;
-            sender.teleport(spawnLocation);
-
+            //val spawnLocation: Location = newWorld.spawnLocation;
+            //sender.teleport(spawnLocation)
+            val players = arrayOf(p, sender)
 
             //PhaseManager übernimmt
-            phaseManagers[newWorld.name] = PhaseManager(plugin, newWorld)
+            phaseManagers[newWorld.name] = PhaseManager(plugin, newWorld, players)
 
 
             return false
@@ -77,7 +78,7 @@ class DuelCommand(val plugin: Scaffoldpvp) : CommandExecutor {
 
         p.sendMessage(Component.text(sender.name + " hat dich herausgefordert!").color(NamedTextColor.BLUE))
         p.sendMessage(Component.text("Du kannst die Einladung mit /duel " + sender.name + " annehmen!").color(NamedTextColor.BLUE))
-        sender.sendMessage(Component.text("Du hast " + args[0] + " erfolgreich herausgefordert!").color(NamedTextColor.GREEN))
+        sender.sendMessage(Component.text("Du hast " + p.name + " erfolgreich herausgefordert!").color(NamedTextColor.GREEN))
 
         return false
     }

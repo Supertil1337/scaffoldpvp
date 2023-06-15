@@ -22,17 +22,17 @@ import org.bukkit.inventory.InventoryHolder
 import org.bukkit.scheduler.BukkitRunnable
 
 
-class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private val utils: Utils, private val phaseManager: PhaseManager) : Phase(plugin){
+class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private val utils: Utils, private val phaseManager: PhaseManager, private val players: Array<Player>) : Phase(plugin){
 
     init {
         utils.firstSpawn = true
-        for (p in world.players) utils.setupPlayer(plugin!!, p)
+        for (p in players) utils.setupPlayer(plugin!!, p)
 
         object : BukkitRunnable() {
             private var seconds = 5
             override fun run() {
                 if(seconds <= 0){
-                    for (p in Bukkit.getOnlinePlayers()) p.showTitle(
+                    for (p in world.players) p.showTitle(
                         Title.title(Component.text("FIGHT").color(NamedTextColor.RED),
                             Component.text("Eliminate your opponent!").color(NamedTextColor.BLUE)))
                     phaseManager.changePhase(PvPPhase(plugin, world, utils, phaseManager), plugin!!)
@@ -40,7 +40,7 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
 
                     return
                 }
-                for(p in Bukkit.getOnlinePlayers()){
+                for(p in world.players){
                     p.showTitle(
                         Title.title(Component.text("GET READY").color(NamedTextColor.RED),
                             Component.text("$seconds seconds remain").color(NamedTextColor.BLUE)))

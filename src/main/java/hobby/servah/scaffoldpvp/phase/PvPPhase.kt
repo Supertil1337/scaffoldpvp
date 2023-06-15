@@ -121,10 +121,15 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
 
     }
     @EventHandler
-    fun leave(e: PlayerQuitEvent){
+    fun leave(e: PlayerQuitEvent) {
         val list = world.players
-        for(p in list){
-            p.showTitle(Title.title(Component.text("You won!").color(NamedTextColor.GREEN), Component.text("Your opponent died!").color(NamedTextColor.BLUE)))
+        for (p in list) {
+            p.showTitle(
+                Title.title(
+                    Component.text("You won!").color(NamedTextColor.GREEN),
+                    Component.text("Your opponent died!").color(NamedTextColor.BLUE)
+                )
+            )
             Utils.playerLeaveDuelWorld(world, p)
         }
 
