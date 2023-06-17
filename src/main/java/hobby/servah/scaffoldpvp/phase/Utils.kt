@@ -62,6 +62,13 @@ class Utils(private val world: World) {
         meta.isUnbreakable = true
         pickaxe.itemMeta = meta
         p.inventory.addItem(pickaxe)
+        val bow = ItemStack(Material.BOW)
+        val meta3 = bow.itemMeta
+        meta3.addEnchant(Enchantment.ARROW_DAMAGE, 1, false)
+        meta3.isUnbreakable = true
+        bow.itemMeta = meta3
+        p.inventory.addItem(bow)
+        p.inventory.setItem(8, ItemStack(Material.ARROW, 5))
         p.inventory.armorContents = arrayOf(
             ItemStack(Material.DIAMOND_BOOTS), ItemStack(Material.DIAMOND_LEGGINGS),
             ItemStack(Material.DIAMOND_CHESTPLATE), ItemStack(Material.DIAMOND_HELMET)

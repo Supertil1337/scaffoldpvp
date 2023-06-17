@@ -14,11 +14,7 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryMoveItemEvent
-import org.bukkit.event.player.PlayerAttemptPickupItemEvent
-import org.bukkit.event.player.PlayerDropItemEvent
-import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerMoveEvent
-import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.*
 import org.bukkit.inventory.InventoryHolder
 import org.bukkit.scheduler.BukkitRunnable
 
@@ -28,7 +24,9 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
     init {
         utils.firstSpawn = true
         for (p in players) utils.setupPlayer(plugin!!, p)
-
+        val wb = world.worldBorder
+        wb.center = world.spawnLocation
+        wb.size = 100.0
         object : BukkitRunnable() {
             private var seconds = 5
             override fun run() {
