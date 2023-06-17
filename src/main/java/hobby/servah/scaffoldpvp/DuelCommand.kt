@@ -1,6 +1,7 @@
 package hobby.servah.scaffoldpvp
 
 import hobby.servah.scaffoldpvp.phase.PhaseManager
+import hobby.servah.scaffoldpvp.phase.Utils
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.apache.commons.io.FileUtils
@@ -33,6 +34,11 @@ class DuelCommand(val plugin: Scaffoldpvp) : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
         if (sender !is Player) return false
 
+        if(sender.world.name != "world"){
+            sender.sendMessage(Component.text("Du kannst keine Anfrage schicken, während du in einem Duel bist!").color(NamedTextColor.RED))
+            return false
+        }
+
         if (args?.size != 1) {
             sender.sendMessage(Component.text("FREUNDCHEN, so geht das aber nicht!!!").color(NamedTextColor.RED))
             return false
@@ -47,7 +53,7 @@ class DuelCommand(val plugin: Scaffoldpvp) : CommandExecutor {
             p.sendMessage(Component.text(sender.name + " hat deine Anfrage angenommen!").color(NamedTextColor.BLUE))
             duelRequests[p.uniqueId] = null
             //ab in die runde (von JoinQueueCommand gecopiet)
-            try {
+            /*try {
                 val sourceDirectory = File("ScaffoldPvP")
                 val destinationDirectory = File("Duel")
                 FileUtils.copyDirectory(sourceDirectory, destinationDirectory)
@@ -69,6 +75,8 @@ class DuelCommand(val plugin: Scaffoldpvp) : CommandExecutor {
             //PhaseManager übernimmt
             phaseManagers[newWorld.name] = PhaseManager(plugin, newWorld, players)
 
+             */
+            Utils.startMatch(sender, p, plugin)
 
             return false
         }

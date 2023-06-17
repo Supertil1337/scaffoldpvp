@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerMoveEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.InventoryHolder
 import org.bukkit.scheduler.BukkitRunnable
 
@@ -132,5 +133,19 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
     fun onMove(e: PlayerMoveEvent){
         if(e.player.world != world) return
         e.isCancelled = true
+    }
+    @EventHandler
+    fun leave(e: PlayerQuitEvent){
+        if(e.player.world != world) return
+        val list = world.players
+        for (p in list) {
+            p.showTitle(
+                Title.title(
+                    Component.text("You won!").color(NamedTextColor.GREEN),
+                    Component.text("Your opponent gave up!").color(NamedTextColor.BLUE)
+                )
+            )
+            Utils.playerLeaveDuelWorld(world, p)
+        }
     }
 }

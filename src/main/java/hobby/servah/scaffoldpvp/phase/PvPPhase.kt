@@ -8,9 +8,11 @@ import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.World
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -79,13 +81,15 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
     }
 
 
-    @EventHandler
+    /*@EventHandler
     fun onDeath(e: PlayerDeathEvent){
         if(e.player.world != world) return
         e.drops.clear()
         val list = world.players
         list.remove(e.player)
         for(p in list) p.showTitle(Title.title(Component.text("You won!").color(NamedTextColor.GREEN), Component.text("Your opponent died!").color(NamedTextColor.BLUE)))
+        //e.player.spigot().respawn()
+
     }
     @EventHandler
     fun onRespawn(e: PlayerRespawnEvent){
@@ -118,20 +122,103 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
             }
         }.runTaskLater(plugin!!, 1)
 
-
     }
+
+     */
     @EventHandler
     fun leave(e: PlayerQuitEvent) {
+        if(e.player.world != world) return
         val list = world.players
         for (p in list) {
             p.showTitle(
                 Title.title(
                     Component.text("You won!").color(NamedTextColor.GREEN),
-                    Component.text("Your opponent died!").color(NamedTextColor.BLUE)
+                    Component.text("Your opponent gave up!").color(NamedTextColor.BLUE)
                 )
             )
             Utils.playerLeaveDuelWorld(world, p)
         }
 
+    }
+    /*@EventHandler
+    fun damage(e: EntityDamageEvent){
+        val p = e.entity
+        if(p !is Player) return
+        if(p.world != world) return
+        //Bukkit.broadcast(Component.text(p.health - e.damage))
+        if(p.health-e.damage <= 0){
+            e.isCancelled = true
+            p.health = 20.0
+            //copied von PlayerDeathEventListener
+            val list2 = world.players
+            list2.remove(p)
+            for(p2 in list2) p2.showTitle(Title.title(Component.text("You won!").color(NamedTextColor.GREEN), Component.text("Your opponent died!").color(NamedTextColor.BLUE)))
+
+            //copied von PlayerRespawnEvent Listener
+
+
+            p.showTitle(Title.title(Component.text("You died").color(NamedTextColor.RED), Component.text("You lost the fight!").color(NamedTextColor.BLUE)))
+            val list = world.players
+            list.add(p)
+            for(p1 in list){
+                p1.inventory.clear()
+                val leave = ItemStack(Material.BARRIER)
+                val leaveMeta = leave.itemMeta
+                leaveMeta.isUnbreakable = true //einfach so
+                leaveMeta.displayName(Component.text("Leave").color(NamedTextColor.RED))
+                leave.itemMeta = leaveMeta
+                val playAgain = ItemStack(Material.DIAMOND_SWORD)
+                val playAgainMeta = playAgain.itemMeta
+                playAgainMeta.isUnbreakable = true
+                playAgainMeta.displayName(Component.text("Play again").color(NamedTextColor.BLUE))
+                playAgain.itemMeta = playAgainMeta
+                p1.inventory.setItem(8, leave)
+                p1.inventory.setItem(0, playAgain)
+
+                phaseManager.changePhase(EndPhase(world, utils, plugin), plugin!!)
+                //Utils.playerLeaveDuelWorld(world, p1)
+            }
+        }
+    }
+
+     */
+    @EventHandler
+    fun onDeath(e: PlayerDeathEvent){
+        if(e.player.world != world) return
+        val p = e.player
+        e.isCancelled = true
+        p.health = 20.0
+        //copied von PlayerDeathEventListener
+        val list2 = world.players
+        list2.remove(p)
+        for(p2 in list2){
+            p2.showTitle(Title.title(Component.text("You won!").color(NamedTextColor.GREEN), Component.text("Your opponent died!").color(NamedTextColor.BLUE)))
+            p2.health = 20.0
+        }
+
+        //copied von PlayerRespawnEvent Listener
+
+
+        p.showTitle(Title.title(Component.text("You died").color(NamedTextColor.RED), Component.text("You lost the fight!").color(NamedTextColor.BLUE)))
+        val list = world.players
+        list.add(p)
+        for(p1 in list){
+            p1.inventory.clear()
+            val leave = ItemStack(Material.BARRIER)
+            val leaveMeta = leave.itemMeta
+            leaveMeta.isUnbreakable = true //einfach so
+            leaveMeta.displayName(Component.text("Leave").color(NamedTextColor.RED))
+            leave.itemMeta = leaveMeta
+            val playAgain = ItemStack(Material.DIAMOND_SWORD)
+            val playAgainMeta = playAgain.itemMeta
+            playAgainMeta.isUnbreakable = true
+            playAgainMeta.displayName(Component.text("Play again").color(NamedTextColor.BLUE))
+            playAgain.itemMeta = playAgainMeta
+            p1.inventory.setItem(8, leave)
+            p1.inventory.setItem(0, playAgain)
+
+            phaseManager.changePhase(EndPhase(world, utils, plugin), plugin!!)
+            //Utils.playerLeaveDuelWorld(world, p1)
+        }
     }
 }

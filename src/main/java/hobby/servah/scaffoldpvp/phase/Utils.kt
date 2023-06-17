@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.util.Vector
 import java.io.File
+import java.io.IOException
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -88,6 +89,40 @@ class Utils(private val world: World) {
             DuelCommand.phaseManagers[world.name]?.clickListener?.task = null
             DuelCommand.phaseManagers[world.name]?.clickListener = null
             DuelCommand.phaseManagers[world.name] = null
+        }
+        fun startMatch(p1: Player, p2: Player, plugin: Scaffoldpvp){
+            var counter = 0
+            try {
+                val sourceDirectory = File("ScaffoldPvP")
+                fun loop(){
+                    val destinationDirectory = File("Duel$counter")
+                    if(destinationDirectory.exists()){
+                        counter++
+                        loop()
+                    }
+                    else{
+                        FileUtils.copyDirectory(sourceDirectory, destinationDirectory)
+                    }
+                }
+                loop()
+
+            }
+            catch (e: IOException){
+                e.printStackTrace()
+            }
+
+
+            val newWorld = Bukkit.createWorld(WorldCreator("Duel$counter"))
+            if(newWorld == null){
+                p1.sendMessage("joo dat is null");
+                return
+            }
+            //val spawnLocation: Location = newWorld.spawnLocation;
+            //sender.teleport(spawnLocation)
+            val players = arrayOf(p1, p2)
+
+            //PhaseManager übernimmt
+            DuelCommand.phaseManagers[newWorld.name] = PhaseManager(plugin, newWorld, players)
         }
     }
 
