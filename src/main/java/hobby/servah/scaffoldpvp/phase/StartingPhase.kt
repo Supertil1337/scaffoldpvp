@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryMoveItemEvent
@@ -145,5 +146,12 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
             )
             Utils.playerLeaveDuelWorld(world, p)
         }
+    }
+    @EventHandler
+    fun shoot(e: EntityShootBowEvent){
+        val p = e.entity
+        if(p !is Player) return
+        e.isCancelled = true
+        p.sendMessage(Component.text("Du kannst erst schießen, wenn das Spiel begonnen hat!").color(NamedTextColor.RED))
     }
 }

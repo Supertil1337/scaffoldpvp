@@ -3,8 +3,8 @@ package hobby.servah.scaffoldpvp.phase
 import hobby.servah.scaffoldpvp.DuelCommand
 import hobby.servah.scaffoldpvp.Scaffoldpvp
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.text.format.TextColor
 import org.apache.commons.io.FileUtils
 import org.bukkit.*
 import org.bukkit.enchantments.Enchantment
@@ -15,7 +15,7 @@ import org.bukkit.util.Vector
 import java.io.File
 import java.io.IOException
 import java.util.*
-import kotlin.collections.HashMap
+
 
 class Utils(private val world: World) {
 
@@ -65,18 +65,28 @@ class Utils(private val world: World) {
         val bow = ItemStack(Material.BOW)
         val meta3 = bow.itemMeta
         meta3.addEnchant(Enchantment.ARROW_DAMAGE, 1, false)
+        meta3.addEnchant(Enchantment.ARROW_INFINITE, 1, false)
         meta3.isUnbreakable = true
         bow.itemMeta = meta3
         p.inventory.addItem(bow)
-        p.inventory.setItem(8, ItemStack(Material.ARROW, 5))
+        p.inventory.setItem(9, ItemStack(Material.ARROW, 1))
         p.inventory.armorContents = arrayOf(
             ItemStack(Material.DIAMOND_BOOTS), ItemStack(Material.DIAMOND_LEGGINGS),
             ItemStack(Material.DIAMOND_CHESTPLATE), ItemStack(Material.DIAMOND_HELMET)
         )
-        p.inventory.setItemInOffHand(ItemStack(Material.STICK))
+        val switch = ItemStack(Material.STICK)
+        val meta4 = switch.itemMeta
+        meta4.displayName(Component.text("Switch").color(NamedTextColor.DARK_GREEN))
+        val loreList = ArrayList<TextComponent>()
+        loreList.add(Component.text("Right to click to toggle Scaffold").color(NamedTextColor.DARK_PURPLE))
+        meta4.lore(loreList)
+        switch.itemMeta = meta4
+        p.inventory.setItemInOffHand(switch)
     }
     companion object{
         fun playerLeaveDuelWorld(world: World, p: Player){
+            //war zum Testen, weil random noclassdeffounderror aber kam nicht wieder
+            //Bukkit.broadcast(Component.text(world.name))
             if(!world.name.startsWith("Duel")){
                 p.sendMessage(Component.text("You're currently not in a duel!").color(NamedTextColor.RED))
                 return

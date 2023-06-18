@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -23,9 +24,17 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
+import java.util.UUID
 
 class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils: Utils, private val phaseManager: PhaseManager) : Phase(plugin) {
 
+    private val canShoot = HashMap<UUID, Boolean>()
+
+    init{
+        for(p in world.players){
+            canShoot[p.uniqueId] = true
+        }
+    }
     override fun disable() {
         //TODO("Not yet implemented")
     }
@@ -220,5 +229,31 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
             phaseManager.changePhase(EndPhase(world, utils, plugin), plugin!!)
             //Utils.playerLeaveDuelWorld(world, p1)
         }
+    }
+    @EventHandler
+    fun shoot(e: EntityShootBowEvent){
+        if(e.entity.world != world) return
+        val p = e.entity
+        if(p !is Player) return
+        if(canShoot[p.uniqueId] == false) {
+            e.isCancelled = true
+            return
+        }
+        canShoot[p.uniqueId] = false
+        object : BukkitRunnable() {
+            private var seconds = 3
+            override fun run() {
+                if(seconds <= 0){
+                    canShoot[p.uniqueId] = true
+                    p.level = 0
+                    p.exp =  0F
+                    this.cancel()
+                    return
+                }
+                p.level = seconds
+                p.exp = seconds / 3F
+                seconds--
+            }
+        }.runTaskTimer(plugin!!, 0L, 20L)
     }
 }
