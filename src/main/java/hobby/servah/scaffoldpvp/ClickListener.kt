@@ -18,7 +18,7 @@ class ClickListener(private val plugin: Scaffoldpvp, private val utils: Utils, p
     fun onClick(e: PlayerInteractEvent){
         if(e.player.world != world) return
         if(e.action.isRightClick){
-            if(e.item != ItemStack(Material.STICK)) return
+            if(e.item.type != Material.STICK) return
             utils.scaffold[e.player.uniqueId] = !(utils.scaffold[e.player.uniqueId])!!
             e.isCancelled = true
         }

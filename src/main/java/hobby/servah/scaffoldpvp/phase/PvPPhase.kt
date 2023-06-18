@@ -4,8 +4,6 @@ import hobby.servah.scaffoldpvp.Scaffoldpvp
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.title.Title
-import org.bukkit.Bukkit
-import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
@@ -13,6 +11,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause
 import org.bukkit.event.entity.EntityShootBowEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.entity.PlayerDeathEvent
@@ -21,10 +20,10 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
-import java.util.UUID
+import java.util.*
+
 
 class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils: Utils, private val phaseManager: PhaseManager) : Phase(plugin) {
 
@@ -255,5 +254,11 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
                 seconds--
             }
         }.runTaskTimer(plugin!!, 0L, 20L)
+    }
+
+    @EventHandler
+    fun fallDamageEvent(e: EntityDamageEvent) {
+        if(e.entity.world != world) return
+        if (e.entity is Player && e.cause == DamageCause.FALL) e.damage = e.damage / 2
     }
 }
