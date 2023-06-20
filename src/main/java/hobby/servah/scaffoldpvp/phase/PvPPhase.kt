@@ -4,6 +4,7 @@ import hobby.servah.scaffoldpvp.Scaffoldpvp
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.title.Title
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
@@ -257,8 +258,26 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
     }
 
     @EventHandler
-    fun fallDamageEvent(e: EntityDamageEvent) {
+    fun damage(e: EntityDamageEvent) {
         if(e.entity.world != world) return
-        if (e.entity is Player && e.cause == DamageCause.FALL) e.damage = e.damage / 2
+        val p = e.entity
+        if(p !is Player) return
+        if (e.cause == DamageCause.FALL){
+            e.damage = e.damage / 2
+            return
+        }
+        if(!phaseManager.clickListener?.allowed?.get(p.uniqueId)!!)
+        //Bukkit.broadcast(Component.text("test1"))
+        phaseManager.clickListener?.allowed?.set(p.uniqueId, false)
+        val scaffold = utils.scaffold[p.uniqueId]
+        utils.scaffold[p.uniqueId] = false
+        object : BukkitRunnable(){
+            override fun run() {
+                //Bukkit.broadcast(Component.text("test2"))
+                utils.scaffold[p.uniqueId] = scaffold!!
+                phaseManager.clickListener?.allowed?.set(p.uniqueId, true)
+            }
+
+        }.runTaskLater(plugin!!, 20L)
     }
 }
