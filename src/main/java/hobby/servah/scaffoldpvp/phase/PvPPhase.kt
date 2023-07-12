@@ -4,9 +4,11 @@ import hobby.servah.scaffoldpvp.Scaffoldpvp
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.title.Title
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
+import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
@@ -19,6 +21,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
@@ -157,6 +160,24 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
             }
         }.runTaskTimer(plugin!!, 0L, 20L)
     }
+
+    //funktioniert nicht :(
+    /*@EventHandler
+    fun onTryShootBow(e: PlayerInteractEvent){
+        if(e.player.world != world) return
+        Bukkit.broadcast(Component.text("Kleiner test1"))
+        if(e.item?.type != Material.BOW) return
+        Bukkit.broadcast(Component.text("Kleiner test2"))
+        if(canShoot[e.player.uniqueId] == true) return
+        Bukkit.broadcast(Component.text("Kleiner test3"))
+        //Schade, scheint nicht zu funktionieren
+        //e.setUseItemInHand(Event.Result.DENY)
+
+        Bukkit.broadcast(Component.text("Kleiner test"))
+        e.isCancelled = true
+    }
+
+     */
 
     @EventHandler
     fun damage(e: EntityDamageEvent) {

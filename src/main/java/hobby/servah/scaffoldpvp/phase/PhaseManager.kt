@@ -2,12 +2,18 @@ package hobby.servah.scaffoldpvp.phase
 
 import hobby.servah.scaffoldpvp.ClickListener
 import hobby.servah.scaffoldpvp.Scaffoldpvp
+import jdk.jshell.execution.Util
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.title.Title
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.plugin.PluginManager
+import org.bukkit.scheduler.BukkitRunnable
+import javax.naming.Name
 
 abstract class Phase(val plugin: Scaffoldpvp?) : Listener {
     var type: String = ""
@@ -27,6 +33,39 @@ class PhaseManager(val plugin: Scaffoldpvp, private val duelWorld: World, player
         changePhase(currentPhase!!, plugin)
         world = duelWorld
         pluginManager.registerEvents(clickListener!!, plugin)
+
+        object : BukkitRunnable(){
+            override fun run() {
+                for(p in world.players){
+                    p.sendMessage(Component.text("Das Spiel endet in 60 Sekunden!").color(NamedTextColor.RED))
+                }
+            }
+
+        }.runTaskLater(plugin, 60 * 2 * 20)
+        object : BukkitRunnable(){
+            var counter = 10
+            override fun run() {
+                if(counter <= 0){
+                    for(p in world.players){
+                        p.showTitle(
+                            Title.title(
+                                Component.text("Draw").color(NamedTextColor.YELLOW),
+                                Component.text("You ran out of time!").color(NamedTextColor.DARK_PURPLE)
+                            )
+                        )
+                    }
+                    //End Match
+                    utils.endMatch(world.players, this@PhaseManager, plugin)
+                    this.cancel()
+                    return
+                }
+                for(p in world.players){
+                    p.sendMessage(Component.text("Das Spiel endet in $counter Sekunden!").color(NamedTextColor.RED))
+                }
+                counter--
+            }
+
+        }.runTaskTimer(plugin, 170 * 20, 20)
     }
 
 
