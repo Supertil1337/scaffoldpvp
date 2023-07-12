@@ -9,6 +9,6 @@ class BlockCommand : CommandExecutor {
 
     //NEEEEEEEE, lass lieber menü mit ausgewählten blöcken machen
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
-
+        return false;
     }
 }

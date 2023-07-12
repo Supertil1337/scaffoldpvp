@@ -29,6 +29,7 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
     private val canShoot = HashMap<UUID, Boolean>()
 
     init{
+        type = "PvP"
         for(p in world.players){
             canShoot[p.uniqueId] = true
         }

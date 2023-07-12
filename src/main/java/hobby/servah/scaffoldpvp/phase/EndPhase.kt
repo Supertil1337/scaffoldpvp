@@ -4,6 +4,7 @@ import hobby.servah.scaffoldpvp.DuelCommand
 import hobby.servah.scaffoldpvp.Scaffoldpvp
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.title.Title
 import org.apache.commons.io.FileUtils
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -19,6 +20,7 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
 import java.io.File
 import java.util.*
@@ -29,6 +31,9 @@ class EndPhase(private val world: World, private val utils: Utils, plugin: Scaff
     //wird auf true gesetzt sobald einer nochmal spielen will und wenn es schon true ist wird halt neue runde gestartet
     //private var playAgain: Boolean = false
     private var playAgain = HashMap<UUID, Boolean>()
+    init {
+        type = "End"
+    }
     override fun disable() {
 
     }
@@ -130,5 +135,15 @@ class EndPhase(private val world: World, private val utils: Utils, plugin: Scaff
         if(p !is Player) return
         if(p.world != world) return
         e.isCancelled = true
+    }
+    @EventHandler
+    fun onLeave(e: PlayerQuitEvent){
+        val p = e.player
+        if(p.world != world) return
+        val list = world.players
+        for (p1 in list) {
+            p.sendMessage(Component.text(e.player.name + " möchte nicht nochmal spielen!").color(NamedTextColor.DARK_GRAY))
+            Utils.playerLeaveDuelWorld(world, p1)
+        }
     }
 }

@@ -19,6 +19,12 @@ class LeaveCommand : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
         if(sender !is Player) return false
         val world: World = sender.world
+
+        if(DuelCommand.phaseManagers[world.name]?.currentPhase?.type == "End"){
+            sender.sendMessage(Component.text("Bitte benutze das Barrier Item in deiner Hotbar!").color(NamedTextColor.BLUE))
+            return false
+        }
+
         val list = world.players
         list.remove(sender)
         for(p in list){

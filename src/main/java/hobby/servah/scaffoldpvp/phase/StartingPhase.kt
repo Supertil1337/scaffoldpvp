@@ -24,6 +24,7 @@ import org.bukkit.scheduler.BukkitRunnable
 class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private val utils: Utils, private val phaseManager: PhaseManager, private val players: Array<Player>) : Phase(plugin){
 
     init {
+        type = "Starting"
         utils.firstSpawn = true
         for (p in players) utils.setupPlayer(plugin!!, p)
         val wb = world.worldBorder

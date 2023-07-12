@@ -10,6 +10,7 @@ import org.bukkit.event.Listener
 import org.bukkit.plugin.PluginManager
 
 abstract class Phase(val plugin: Scaffoldpvp?) : Listener {
+    var type: String = ""
     abstract fun disable()
     abstract fun getNextPhase()
 }
