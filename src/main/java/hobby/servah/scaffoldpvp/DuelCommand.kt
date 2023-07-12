@@ -52,30 +52,6 @@ class DuelCommand(val plugin: Scaffoldpvp) : CommandExecutor {
         if(duelRequests[p.uniqueId] == sender.uniqueId){
             p.sendMessage(Component.text(sender.name + " hat deine Anfrage angenommen!").color(NamedTextColor.BLUE))
             duelRequests[p.uniqueId] = null
-            //ab in die runde (von JoinQueueCommand gecopiet)
-            /*try {
-                val sourceDirectory = File("ScaffoldPvP")
-                val destinationDirectory = File("Duel")
-                FileUtils.copyDirectory(sourceDirectory, destinationDirectory)
-            }
-            catch (e: IOException){
-                e.printStackTrace();
-            }
-
-
-            val newWorld = Bukkit.createWorld(WorldCreator("Duel"))
-            if(newWorld == null){
-                sender.sendMessage("joo dat is null");
-                return false
-            }
-            //val spawnLocation: Location = newWorld.spawnLocation;
-            //sender.teleport(spawnLocation)
-            val players = arrayOf(p, sender)
-
-            //PhaseManager übernimmt
-            phaseManagers[newWorld.name] = PhaseManager(plugin, newWorld, players)
-
-             */
             Utils.startMatch(sender, p, plugin)
 
             return false

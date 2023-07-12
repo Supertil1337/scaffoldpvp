@@ -95,52 +95,6 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
         if(e.cursor === null) return
         e.isCancelled = true
     }
-
-
-    /*@EventHandler
-    fun onDeath(e: PlayerDeathEvent){
-        if(e.player.world != world) return
-        e.drops.clear()
-        val list = world.players
-        list.remove(e.player)
-        for(p in list) p.showTitle(Title.title(Component.text("You won!").color(NamedTextColor.GREEN), Component.text("Your opponent died!").color(NamedTextColor.BLUE)))
-        //e.player.spigot().respawn()
-
-    }
-    @EventHandler
-    fun onRespawn(e: PlayerRespawnEvent){
-        if(e.player.world != world) return
-        e.player.showTitle(Title.title(Component.text("You died").color(NamedTextColor.RED), Component.text("You lost the fight!").color(NamedTextColor.BLUE)))
-
-
-        //TODO eigentliches play again und leave features noch adden
-        object : BukkitRunnable() {
-            override fun run() {
-                val list = world.players
-                list.add(e.player)
-                for(p in list){
-                    p.inventory.clear()
-                    val leave = ItemStack(Material.BARRIER)
-                    val leaveMeta = leave.itemMeta
-                    leaveMeta.isUnbreakable = true //einfach so
-                    leaveMeta.displayName(Component.text("Leave").color(NamedTextColor.RED))
-                    leave.itemMeta = leaveMeta
-                    val playAgain = ItemStack(Material.DIAMOND_SWORD)
-                    val playAgainMeta = playAgain.itemMeta
-                    playAgainMeta.isUnbreakable = true
-                    playAgainMeta.displayName(Component.text("Play again").color(NamedTextColor.BLUE))
-                    playAgain.itemMeta = playAgainMeta
-                    p.inventory.setItem(8, leave)
-                    p.inventory.setItem(0, playAgain)
-
-                    Utils.playerLeaveDuelWorld(world, p)
-                }
-            }
-        }.runTaskLater(plugin!!, 1)
-
-    }
-
-     */
     @EventHandler
     fun leave(e: PlayerQuitEvent) {
         if(e.player.world != world) return
@@ -156,55 +110,14 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
         }
 
     }
-    /*@EventHandler
-    fun damage(e: EntityDamageEvent){
-        val p = e.entity
-        if(p !is Player) return
-        if(p.world != world) return
-        //Bukkit.broadcast(Component.text(p.health - e.damage))
-        if(p.health-e.damage <= 0){
-            e.isCancelled = true
-            p.health = 20.0
-            //copied von PlayerDeathEventListener
-            val list2 = world.players
-            list2.remove(p)
-            for(p2 in list2) p2.showTitle(Title.title(Component.text("You won!").color(NamedTextColor.GREEN), Component.text("Your opponent died!").color(NamedTextColor.BLUE)))
 
-            //copied von PlayerRespawnEvent Listener
-
-
-            p.showTitle(Title.title(Component.text("You died").color(NamedTextColor.RED), Component.text("You lost the fight!").color(NamedTextColor.BLUE)))
-            val list = world.players
-            list.add(p)
-            for(p1 in list){
-                p1.inventory.clear()
-                val leave = ItemStack(Material.BARRIER)
-                val leaveMeta = leave.itemMeta
-                leaveMeta.isUnbreakable = true //einfach so
-                leaveMeta.displayName(Component.text("Leave").color(NamedTextColor.RED))
-                leave.itemMeta = leaveMeta
-                val playAgain = ItemStack(Material.DIAMOND_SWORD)
-                val playAgainMeta = playAgain.itemMeta
-                playAgainMeta.isUnbreakable = true
-                playAgainMeta.displayName(Component.text("Play again").color(NamedTextColor.BLUE))
-                playAgain.itemMeta = playAgainMeta
-                p1.inventory.setItem(8, leave)
-                p1.inventory.setItem(0, playAgain)
-
-                phaseManager.changePhase(EndPhase(world, utils, plugin), plugin!!)
-                //Utils.playerLeaveDuelWorld(world, p1)
-            }
-        }
-    }
-
-     */
     @EventHandler
     fun onDeath(e: PlayerDeathEvent){
         if(e.player.world != world) return
         val p = e.player
         e.isCancelled = true
         p.health = 20.0
-        //copied von PlayerDeathEventListener
+
         val list2 = world.players
         list2.remove(p)
         for(p2 in list2){
@@ -212,32 +125,8 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
             p2.health = 20.0
         }
 
-        //copied von PlayerRespawnEvent Listener
-
         p.showTitle(Title.title(Component.text("You died").color(NamedTextColor.RED), Component.text("You lost the fight!").color(NamedTextColor.BLUE)))
-        /*p.showTitle(Title.title(Component.text("You died").color(NamedTextColor.RED), Component.text("You lost the fight!").color(NamedTextColor.BLUE)))
-        val list = world.players
-        list.add(p)
-        for(p1 in list){
-            p1.inventory.clear()
-            val leave = ItemStack(Material.BARRIER)
-            val leaveMeta = leave.itemMeta
-            leaveMeta.isUnbreakable = true //einfach so
-            leaveMeta.displayName(Component.text("Leave").color(NamedTextColor.RED))
-            leave.itemMeta = leaveMeta
-            val playAgain = ItemStack(Material.DIAMOND_SWORD)
-            val playAgainMeta = playAgain.itemMeta
-            playAgainMeta.isUnbreakable = true
-            playAgainMeta.displayName(Component.text("Play again").color(NamedTextColor.BLUE))
-            playAgain.itemMeta = playAgainMeta
-            p1.inventory.setItem(8, leave)
-            p1.inventory.setItem(0, playAgain)
 
-            phaseManager.changePhase(EndPhase(world, utils, plugin), plugin!!)
-            //Utils.playerLeaveDuelWorld(world, p1)
-        }
-
-         */
         val list = world.players
         list.add(p)
         utils.endMatch(list, phaseManager, plugin!!)

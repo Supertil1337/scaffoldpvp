@@ -155,8 +155,6 @@ class Utils(private val world: World) {
                 p1.sendMessage("joo dat is null");
                 return
             }
-            //val spawnLocation: Location = newWorld.spawnLocation;
-            //sender.teleport(spawnLocation)
             val players = arrayOf(p1, p2)
 
             //PhaseManager übernimmt

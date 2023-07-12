@@ -47,21 +47,14 @@ class EndPhase(private val world: World, private val utils: Utils, plugin: Scaff
         if(e.action.isRightClick){
             val list = world.players
             list.remove(e.player)
-            //logging
-            //Bukkit.broadcast(Component.text("test1"))
             if(e.item?.type == Material.BARRIER){
                 //leave
                 for(p in list) p.sendMessage(Component.text(e.player.name + " möchte nicht nochmal spielen!").color(NamedTextColor.DARK_GRAY))
                 for(p in world.players) Utils.playerLeaveDuelWorld(world, p)
             }
             else if(e.item?.type  == Material.DIAMOND_SWORD){
-                //logging
-                //Bukkit.broadcast(Component.text("test2"))
                 if(playAgain[list[0].uniqueId] == true){
                     //nochmal spielen
-
-                    //logging
-                    //Bukkit.broadcast(Component.text(world.players.toString()))
 
                     Utils.startMatch(world.players[0], world.players[1], plugin!!)
                     if(world.playerCount != 0) return
@@ -78,9 +71,6 @@ class EndPhase(private val world: World, private val utils: Utils, plugin: Scaff
                     playAgain[e.player.uniqueId] = true
                     for(p in list) p.sendMessage(Component.text(e.player.name + " möchte nochmal spielen!").color(NamedTextColor.BLUE))
                     e.player.sendMessage(Component.text("Dein Gegner muss deine Anfrage annehmen, damit ihr nochmal spielen könnt!").color(NamedTextColor.BLUE))
-
-                    //logging
-                    //Bukkit.broadcast(Component.text("test3"))
                 }
 
             }
