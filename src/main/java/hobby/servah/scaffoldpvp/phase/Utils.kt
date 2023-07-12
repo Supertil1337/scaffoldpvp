@@ -15,6 +15,7 @@ import org.bukkit.util.Vector
 import java.io.File
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class Utils(private val world: World) {
@@ -82,6 +83,26 @@ class Utils(private val world: World) {
         meta4.lore(loreList)
         switch.itemMeta = meta4
         p.inventory.setItemInOffHand(switch)
+    }
+    fun endMatch(players: MutableList<Player>, phaseManager: PhaseManager, plugin: Scaffoldpvp){
+        for(p in players){
+            p.inventory.clear()
+            val leave = ItemStack(Material.BARRIER)
+            val leaveMeta = leave.itemMeta
+            leaveMeta.isUnbreakable = true //einfach so
+            leaveMeta.displayName(Component.text("Leave").color(NamedTextColor.RED))
+            leave.itemMeta = leaveMeta
+            val playAgain = ItemStack(Material.DIAMOND_SWORD)
+            val playAgainMeta = playAgain.itemMeta
+            playAgainMeta.isUnbreakable = true
+            playAgainMeta.displayName(Component.text("Play again").color(NamedTextColor.BLUE))
+            playAgain.itemMeta = playAgainMeta
+            p.inventory.setItem(8, leave)
+            p.inventory.setItem(0, playAgain)
+
+            phaseManager.changePhase(EndPhase(world, this, plugin), plugin)
+            //Utils.playerLeaveDuelWorld(world, p1)
+        }
     }
     companion object{
         fun playerLeaveDuelWorld(world: World, p: Player){

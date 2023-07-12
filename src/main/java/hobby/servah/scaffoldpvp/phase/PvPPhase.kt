@@ -4,7 +4,6 @@ import hobby.servah.scaffoldpvp.Scaffoldpvp
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.title.Title
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
@@ -21,7 +20,6 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 
@@ -34,6 +32,14 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
         for(p in world.players){
             canShoot[p.uniqueId] = true
         }
+        world.worldBorder.setSize(10.0, 120L)
+        object : BukkitRunnable() {
+            override fun run() {
+                for(p in world.players) p.showTitle(Title.title(Component.text("Draw").color(NamedTextColor.YELLOW), Component.text("Time is up!").color(NamedTextColor.BLUE)))
+                utils.endMatch(world.players, phaseManager, plugin!!)
+            }
+
+        }.runTaskLater(plugin!!, 6000L)
     }
     override fun disable() {
         //TODO("Not yet implemented")
@@ -207,8 +213,8 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
 
         //copied von PlayerRespawnEvent Listener
 
-
         p.showTitle(Title.title(Component.text("You died").color(NamedTextColor.RED), Component.text("You lost the fight!").color(NamedTextColor.BLUE)))
+        /*p.showTitle(Title.title(Component.text("You died").color(NamedTextColor.RED), Component.text("You lost the fight!").color(NamedTextColor.BLUE)))
         val list = world.players
         list.add(p)
         for(p1 in list){
@@ -229,6 +235,11 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
             phaseManager.changePhase(EndPhase(world, utils, plugin), plugin!!)
             //Utils.playerLeaveDuelWorld(world, p1)
         }
+
+         */
+        val list = world.players
+        list.add(p)
+        utils.endMatch(list, phaseManager, plugin!!)
     }
     @EventHandler
     fun shoot(e: EntityShootBowEvent){
