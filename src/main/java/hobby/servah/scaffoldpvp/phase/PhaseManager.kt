@@ -13,10 +13,12 @@ import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.plugin.PluginManager
 import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.scheduler.BukkitTask
 import javax.naming.Name
 
 abstract class Phase(val plugin: Scaffoldpvp?) : Listener {
     var type: String = ""
+    var tasks: List<BukkitTask> = ArrayList<BukkitTask>()
     abstract fun disable()
     abstract fun getNextPhase()
 }
@@ -28,21 +30,22 @@ class PhaseManager(val plugin: Scaffoldpvp, private val duelWorld: World, player
     var clickListener : ClickListener? = ClickListener(plugin, utils, duelWorld)
     private val pluginManager: PluginManager = Bukkit.getPluginManager()
     val world: World
+    var tasks: List<BukkitTask> = ArrayList<BukkitTask>()
 
     init {
         changePhase(currentPhase!!, plugin)
         world = duelWorld
         pluginManager.registerEvents(clickListener!!, plugin)
 
-        object : BukkitRunnable(){
+        tasks = tasks.plus(object : BukkitRunnable(){
             override fun run() {
                 for(p in world.players){
                     p.sendMessage(Component.text("Das Spiel endet in 60 Sekunden!").color(NamedTextColor.RED))
                 }
             }
+        }.runTaskLater(plugin, 60 * 2 * 20))
 
-        }.runTaskLater(plugin, 60 * 2 * 20)
-        object : BukkitRunnable(){
+        tasks = tasks.plus(object : BukkitRunnable(){
             var counter = 10
             override fun run() {
                 if(counter <= 0){
@@ -65,7 +68,7 @@ class PhaseManager(val plugin: Scaffoldpvp, private val duelWorld: World, player
                 counter--
             }
 
-        }.runTaskTimer(plugin, 170 * 20, 20)
+        }.runTaskTimer(plugin, 170 * 20, 20))
     }
 
 

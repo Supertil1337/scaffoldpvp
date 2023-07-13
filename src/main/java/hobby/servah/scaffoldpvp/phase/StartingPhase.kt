@@ -4,6 +4,7 @@ import hobby.servah.scaffoldpvp.Scaffoldpvp
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.title.Title
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
@@ -35,7 +36,7 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
                 world.setBlockData(Location(world, x.toDouble(), -20.0, z.toDouble()), Material.BARRIER.createBlockData())
             }
         }
-        object : BukkitRunnable() {
+        tasks = tasks.plus(object: BukkitRunnable() {
             private var seconds = 5
             override fun run() {
                 if(seconds <= 0){
@@ -54,7 +55,7 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
                 }
                 seconds--
             }
-        }.runTaskTimer(plugin!!, 0L, 20L)
+        }.runTaskTimer(plugin!!, 0L, 20L))
     }
 
     override fun disable() {

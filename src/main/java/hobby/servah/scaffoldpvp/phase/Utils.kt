@@ -1,6 +1,7 @@
 package hobby.servah.scaffoldpvp.phase
 
 import hobby.servah.scaffoldpvp.DuelCommand
+import hobby.servah.scaffoldpvp.DuelCommand.Companion.phaseManagers
 import hobby.servah.scaffoldpvp.Scaffoldpvp
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
@@ -122,11 +123,23 @@ class Utils(private val world: World) {
             if(world.playerCount != 0) return
             Bukkit.unloadWorld(world, false)
             FileUtils.deleteDirectory(File(world.name))
-            DuelCommand.phaseManagers[world.name]?.currentPhase = null
-            DuelCommand.phaseManagers[world.name]?.clickListener?.task?.cancel()
-            DuelCommand.phaseManagers[world.name]?.clickListener?.task = null
-            DuelCommand.phaseManagers[world.name]?.clickListener = null
-            DuelCommand.phaseManagers[world.name] = null
+
+            for(task in phaseManagers[world.name]?.currentPhase?.tasks!!){
+                if(Bukkit.getServer().scheduler.isCurrentlyRunning(task.taskId) || Bukkit.getServer().scheduler.isQueued(task.taskId)){
+                   task.cancel()
+                }
+            }
+            for(task in phaseManagers[world.name]?.tasks!!) {
+                if(Bukkit.getServer().scheduler.isCurrentlyRunning(task.taskId) || Bukkit.getServer().scheduler.isQueued(task.taskId)){
+                    task.cancel()
+                }
+            }
+
+            phaseManagers[world.name]?.currentPhase = null
+            phaseManagers[world.name]?.clickListener?.task?.cancel()
+            phaseManagers[world.name]?.clickListener?.task = null
+            phaseManagers[world.name]?.clickListener = null
+            phaseManagers[world.name] = null
         }
         fun startMatch(p1: Player, p2: Player, plugin: Scaffoldpvp){
             var counter = 0
