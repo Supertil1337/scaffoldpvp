@@ -34,7 +34,7 @@ class DuelCommand(val plugin: Scaffoldpvp) : CommandExecutor {
                 return
             }
 
-
+            if(duelRequests[p1.uniqueId] == p2.uniqueId) return
             duelRequests[p1.uniqueId] = p2.uniqueId
 
             p2.sendMessage(Component.text(p1.name + " hat dich herausgefordert!").color(NamedTextColor.BLUE))

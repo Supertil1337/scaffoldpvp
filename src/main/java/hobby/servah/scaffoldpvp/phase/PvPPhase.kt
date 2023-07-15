@@ -112,7 +112,7 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
 
     }
 
-    //brauch ich das überhaupt noch?
+    //brauch ich das überhaupt noch?, glaub schon lol
     @EventHandler
     fun onDeath(e: PlayerDeathEvent){
         if(e.player.world != world) return

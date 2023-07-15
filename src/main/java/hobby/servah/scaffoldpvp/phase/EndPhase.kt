@@ -31,6 +31,11 @@ class EndPhase(private val world: World, private val utils: Utils, plugin: Scaff
     private var playAgain = HashMap<UUID, Boolean>()
     init {
         type = "End"
+        for(task in DuelCommand.phaseManagers[world.name]?.tasks!!) {
+            if(Bukkit.getServer().scheduler.isCurrentlyRunning(task.taskId) || Bukkit.getServer().scheduler.isQueued(task.taskId)){
+                task.cancel()
+            }
+        }
     }
     override fun disable() {
 
@@ -64,7 +69,7 @@ class EndPhase(private val world: World, private val utils: Utils, plugin: Scaff
                     DuelCommand.phaseManagers[world.name]?.clickListener = null
                     DuelCommand.phaseManagers[world.name] = null
                 }
-                else{
+                else if(playAgain[e.player.uniqueId] == false){
                     //Anderem Spieler mitteilen, dass du nochmal spielen möchtest
                     playAgain[e.player.uniqueId] = true
                     for(p in list) p.sendMessage(Component.text(e.player.name + " möchte nochmal spielen!").color(NamedTextColor.BLUE))
