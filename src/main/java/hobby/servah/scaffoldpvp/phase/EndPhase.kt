@@ -1,10 +1,10 @@
 package hobby.servah.scaffoldpvp.phase
 
-import hobby.servah.scaffoldpvp.DuelCommand
+import hobby.servah.scaffoldpvp.commands.DuelCommand
 import hobby.servah.scaffoldpvp.Scaffoldpvp
+import hobby.servah.scaffoldpvp.Utils
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.title.Title
 import org.apache.commons.io.FileUtils
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -21,10 +21,8 @@ import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.inventory.ItemStack
 import java.io.File
 import java.util.*
-import javax.naming.Name
 import kotlin.collections.HashMap
 
 class EndPhase(private val world: World, private val utils: Utils, plugin: Scaffoldpvp?) : Phase(plugin) {

@@ -1,8 +1,8 @@
 package hobby.servah.scaffoldpvp.phase
 
-import hobby.servah.scaffoldpvp.ClickListener
+import hobby.servah.scaffoldpvp.listeners.ClickListener
 import hobby.servah.scaffoldpvp.Scaffoldpvp
-import jdk.jshell.execution.Util
+import hobby.servah.scaffoldpvp.Utils
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.title.Title
@@ -14,7 +14,6 @@ import org.bukkit.event.Listener
 import org.bukkit.plugin.PluginManager
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
-import javax.naming.Name
 
 abstract class Phase(val plugin: Scaffoldpvp?) : Listener {
     var type: String = ""

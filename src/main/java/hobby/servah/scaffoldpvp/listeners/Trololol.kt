@@ -1,4 +1,4 @@
-package hobby.servah.scaffoldpvp
+package hobby.servah.scaffoldpvp.listeners
 
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

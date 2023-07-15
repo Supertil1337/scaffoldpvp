@@ -1,4 +1,4 @@
-package hobby.servah.scaffoldpvp
+package hobby.servah.scaffoldpvp.unused
 
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender

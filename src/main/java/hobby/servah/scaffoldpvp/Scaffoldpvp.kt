@@ -1,6 +1,8 @@
 package hobby.servah.scaffoldpvp
 
-import hobby.servah.scaffoldpvp.phase.Utils
+import hobby.servah.scaffoldpvp.commands.DuelCommand
+import hobby.servah.scaffoldpvp.commands.LeaveCommand
+import hobby.servah.scaffoldpvp.listeners.Trololol
 import org.bukkit.Bukkit
 import org.bukkit.plugin.PluginManager
 import org.bukkit.plugin.java.JavaPlugin

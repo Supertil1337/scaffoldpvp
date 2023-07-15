@@ -1,10 +1,9 @@
-package hobby.servah.scaffoldpvp
+package hobby.servah.scaffoldpvp.runnables
 
-import hobby.servah.scaffoldpvp.phase.Utils
+import hobby.servah.scaffoldpvp.Utils
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.block.Block
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
 

@@ -1,12 +1,13 @@
-package hobby.servah.scaffoldpvp
+package hobby.servah.scaffoldpvp.listeners
 
-import hobby.servah.scaffoldpvp.phase.Utils
+import hobby.servah.scaffoldpvp.runnables.Scaffold
+import hobby.servah.scaffoldpvp.Scaffoldpvp
+import hobby.servah.scaffoldpvp.Utils
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitTask
 import java.util.UUID
 

@@ -1,23 +1,16 @@
-package hobby.servah.scaffoldpvp
+package hobby.servah.scaffoldpvp.commands
 
+import hobby.servah.scaffoldpvp.Scaffoldpvp
+import hobby.servah.scaffoldpvp.Utils
 import hobby.servah.scaffoldpvp.phase.PhaseManager
-import hobby.servah.scaffoldpvp.phase.Utils
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import org.apache.commons.io.FileUtils
 import org.bukkit.Bukkit
-import org.bukkit.Location
-import org.bukkit.WorldCreator
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
-import org.bukkit.command.TabCompleter
 import org.bukkit.entity.Player
-import org.bukkit.util.StringUtil
-import java.io.File
-import java.io.IOException
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 

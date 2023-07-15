@@ -1,8 +1,9 @@
-package hobby.servah.scaffoldpvp.phase
+package hobby.servah.scaffoldpvp
 
-import hobby.servah.scaffoldpvp.DuelCommand
-import hobby.servah.scaffoldpvp.DuelCommand.Companion.phaseManagers
-import hobby.servah.scaffoldpvp.Scaffoldpvp
+import hobby.servah.scaffoldpvp.commands.DuelCommand
+import hobby.servah.scaffoldpvp.commands.DuelCommand.Companion.phaseManagers
+import hobby.servah.scaffoldpvp.phase.EndPhase
+import hobby.servah.scaffoldpvp.phase.PhaseManager
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.NamedTextColor
