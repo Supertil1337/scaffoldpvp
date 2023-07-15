@@ -74,7 +74,7 @@ class LobbyListener(val plugin: Scaffoldpvp) : Listener {
             return
         }
         if(DuelCommand.duelRequests[p.uniqueId] != null){
-            p.sendMessage(Component.text("Deine Duellanfrage an ${DuelCommand.duelRequests[p.uniqueId]} wurde entfernt!").color(NamedTextColor.BLUE))
+            p.sendMessage(Component.text("Deine Duellanfrage an ${Bukkit.getPlayer(DuelCommand.duelRequests[p.uniqueId]!!)?.name} wurde entfernt!").color(NamedTextColor.BLUE))
             DuelCommand.duelRequests[p.uniqueId] = null
         }
         if(queuedPlayer == null){
