@@ -121,7 +121,7 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
     @EventHandler
     fun onItemMoveBetweenInvs(e: InventoryMoveItemEvent) {
         val holder: InventoryHolder? = e.initiator.holder
-        if(holder !is Player) return                    //TODO checken ob das ganze so wirklich funktioniert
+        if(holder !is Player) return
         if(holder.world != world) return
         e.isCancelled = true
 
@@ -157,6 +157,7 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
     }
     @EventHandler
     fun shoot(e: EntityShootBowEvent){
+        if(e.entity.world != world) return
         val p = e.entity
         if(p !is Player) return
         e.isCancelled = true

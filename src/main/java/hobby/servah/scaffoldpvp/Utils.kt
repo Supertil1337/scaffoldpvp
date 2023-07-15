@@ -7,6 +7,7 @@ import hobby.servah.scaffoldpvp.phase.PhaseManager
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.apache.commons.io.FileUtils
 import org.bukkit.*
 import org.bukkit.enchantments.Enchantment
@@ -120,6 +121,7 @@ class Utils(private val world: World) {
             p.gameMode = GameMode.ADVENTURE
             val loc: Location = Bukkit.getWorld("World")!!.spawnLocation
             p.teleport(loc)
+            lobbySetup(p)
 
             if(world.playerCount != 0) return
             Bukkit.unloadWorld(world, false)
@@ -173,6 +175,29 @@ class Utils(private val world: World) {
 
             //PhaseManager übernimmt
             DuelCommand.phaseManagers[newWorld.name] = PhaseManager(plugin, newWorld, players)
+        }
+        fun lobbySetup(p: Player){
+            p.health = 20.0
+            p.activePotionEffects.clear()
+            p.inventory.clear()
+            p.gameMode = GameMode.ADVENTURE
+            p.level = 0
+            p.exp = 0F
+            val hoe = ItemStack(Material.NETHERITE_HOE)
+            val meta = hoe.itemMeta
+            meta.isUnbreakable = true
+            meta.displayName(Component.text("Request Duel").color(NamedTextColor.BLUE).decorate(TextDecoration.BOLD))
+            meta.lore(mutableListOf(Component.text("Hit a player to request a duel with them!").color(NamedTextColor.GREEN)))
+            hoe.itemMeta = meta
+            p.inventory.addItem(hoe)
+
+            val bamboo = ItemStack(Material.BAMBOO)
+            val meta2 = bamboo.itemMeta
+            meta2.isUnbreakable = true
+            meta2.displayName(Component.text("Join Queue").color(NamedTextColor.RED).decorate(TextDecoration.BOLD))
+            meta2.lore(mutableListOf(Component.text("Right click to join the queue!").color(NamedTextColor.YELLOW)))
+            bamboo.itemMeta = meta2
+            p.inventory.addItem(bamboo)
         }
     }
 
