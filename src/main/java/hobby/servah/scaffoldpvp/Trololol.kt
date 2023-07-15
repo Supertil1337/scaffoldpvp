@@ -9,6 +9,8 @@ class Trololol : Listener {
     fun trollllll(e: PlayerJoinEvent){
         if(e.player.name == "Bittnin"){
             e.player.showDemoScreen()
+            e.player.showElderGuardian()
+            e.player.showWinScreen()
         }
     }
 }

@@ -1,5 +1,6 @@
 package hobby.servah.scaffoldpvp
 
+import hobby.servah.scaffoldpvp.phase.Utils
 import org.bukkit.Bukkit
 import org.bukkit.plugin.PluginManager
 import org.bukkit.plugin.java.JavaPlugin
@@ -21,6 +22,13 @@ class Scaffoldpvp : JavaPlugin() {
 
     override fun onDisable() {
         // Plugin shutdown logic
+        logger.info("Teleporting all players to the lobby and removing the duel worlds")
+        for(w in Bukkit.getWorlds()){
+            if(w.name.startsWith("Duel")) {
+                for (p in w.players) Utils.playerLeaveDuelWorld(w, p)
+            }
+        }
+
     }
 
 }
