@@ -2,6 +2,7 @@ package hobby.servah.scaffoldpvp
 
 import hobby.servah.scaffoldpvp.commands.DuelCommand
 import hobby.servah.scaffoldpvp.commands.LeaveCommand
+import hobby.servah.scaffoldpvp.listeners.LobbyListener
 import hobby.servah.scaffoldpvp.listeners.Trololol
 import org.bukkit.Bukkit
 import org.bukkit.plugin.PluginManager
@@ -17,6 +18,7 @@ class Scaffoldpvp : JavaPlugin() {
         //TODO Tab complete einbauen oder brauch ich nicht?
         //getCommand("duel")?.tabCompleter = TabComplete()
 
+        pluginManager.registerEvents(LobbyListener(this), this)
 
         //troll
         pluginManager.registerEvents(Trololol(), this)

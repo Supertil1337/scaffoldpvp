@@ -112,6 +112,7 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
 
     }
 
+    //brauch ich das überhaupt noch?
     @EventHandler
     fun onDeath(e: PlayerDeathEvent){
         if(e.player.world != world) return
@@ -183,6 +184,10 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
         val p = e.entity
         if(p !is Player) return
         if (e.cause == DamageCause.FALL){
+            if(e.entity.fallDistance <= 6){
+                e.isCancelled = true
+                return
+            }
             e.damage = e.damage / 2
             return
         }

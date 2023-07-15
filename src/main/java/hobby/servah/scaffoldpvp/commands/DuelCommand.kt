@@ -16,11 +16,31 @@ import kotlin.collections.HashMap
 
 class DuelCommand(val plugin: Scaffoldpvp) : CommandExecutor {
 
-    //wenn ein spieler einem anderem spieler ein anfrage schickt, wird dieser dem anfragenden spieler zugewiesen
-    //sonst null oder es gibt ihn nicht
-    var duelRequests  = HashMap<UUID, UUID?>()
+
     companion object{
+
+        //wenn ein spieler einem anderem spieler ein anfrage schickt, wird dieser dem anfragenden spieler zugewiesen
+        //sonst null oder es gibt ihn nicht
+        var duelRequests  = HashMap<UUID, UUID?>()
+
         var phaseManagers = HashMap<String, PhaseManager?>()
+
+        fun requestDuel(p1: Player, p2: Player, plugin: Scaffoldpvp){
+            if(duelRequests[p2.uniqueId] == p1.uniqueId){
+                p2.sendMessage(Component.text(p1.name + " hat deine Anfrage angenommen!").color(NamedTextColor.BLUE))
+                duelRequests[p2.uniqueId] = null
+                Utils.startMatch(p1, p2, plugin)
+
+                return
+            }
+
+
+            duelRequests[p1.uniqueId] = p2.uniqueId
+
+            p2.sendMessage(Component.text(p1.name + " hat dich herausgefordert!").color(NamedTextColor.BLUE))
+            p2.sendMessage(Component.text("Du kannst die Einladung mit /duel " + p1.name + " annehmen!").color(NamedTextColor.BLUE))
+            p1.sendMessage(Component.text("Du hast " + p2.name + " erfolgreich herausgefordert!").color(NamedTextColor.GREEN))
+        }
     }
 
 
@@ -42,20 +62,7 @@ class DuelCommand(val plugin: Scaffoldpvp) : CommandExecutor {
             return false
         }
 
-        if(duelRequests[p.uniqueId] == sender.uniqueId){
-            p.sendMessage(Component.text(sender.name + " hat deine Anfrage angenommen!").color(NamedTextColor.BLUE))
-            duelRequests[p.uniqueId] = null
-            Utils.startMatch(sender, p, plugin)
-
-            return false
-        }
-
-
-        duelRequests[sender.uniqueId] = p.uniqueId
-
-        p.sendMessage(Component.text(sender.name + " hat dich herausgefordert!").color(NamedTextColor.BLUE))
-        p.sendMessage(Component.text("Du kannst die Einladung mit /duel " + sender.name + " annehmen!").color(NamedTextColor.BLUE))
-        sender.sendMessage(Component.text("Du hast " + p.name + " erfolgreich herausgefordert!").color(NamedTextColor.GREEN))
+        requestDuel(sender, p, plugin)
 
         return false
     }
