@@ -36,6 +36,9 @@ class EndPhase(private val world: World, private val utils: Utils, plugin: Scaff
                 task.cancel()
             }
         }
+        for(p in world.players){
+            playAgain[p.uniqueId] = false
+        }
     }
     override fun disable() {
 
@@ -69,6 +72,7 @@ class EndPhase(private val world: World, private val utils: Utils, plugin: Scaff
                     DuelCommand.phaseManagers[world.name]?.clickListener = null
                     DuelCommand.phaseManagers[world.name] = null
                 }
+
                 else if(playAgain[e.player.uniqueId] == false){
                     //Anderem Spieler mitteilen, dass du nochmal spielen möchtest
                     playAgain[e.player.uniqueId] = true
