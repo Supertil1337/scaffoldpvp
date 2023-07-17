@@ -3,6 +3,8 @@ package hobby.servah.scaffoldpvp.listeners
 import hobby.servah.scaffoldpvp.runnables.Scaffold
 import hobby.servah.scaffoldpvp.Scaffoldpvp
 import hobby.servah.scaffoldpvp.Utils
+import net.kyori.adventure.text.Component
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.event.EventHandler
@@ -14,7 +16,7 @@ import java.util.UUID
 
 class ClickListener(private val plugin: Scaffoldpvp, private val utils: Utils, private val world: World) : Listener {
 
-    var task : BukkitTask? = Scaffold(utils).runTaskTimer(plugin, 1, 1)
+    var task : BukkitTask? = Scaffold(utils, plugin).runTaskTimer(plugin, 1, 1)
 
     //wird von PvPPhase gechanged, wenn ein Spieler Schaden weil dann kurz Scaffold disabled wird
     var allowed = HashMap<UUID, Boolean>()

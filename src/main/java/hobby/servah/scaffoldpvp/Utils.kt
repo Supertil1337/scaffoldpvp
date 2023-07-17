@@ -18,10 +18,11 @@ import org.bukkit.util.Vector
 import java.io.File
 import java.io.IOException
 import java.util.*
+import javax.naming.Name
 import kotlin.collections.ArrayList
 
 
-class Utils(private val world: World) {
+class Utils(val world: World) {
 
 
     val spawn1: Location = world.spawnLocation
@@ -115,13 +116,7 @@ class Utils(private val world: World) {
                 p.sendMessage(Component.text("You're currently not in a duel!").color(NamedTextColor.RED))
                 return
             }
-            p.inventory.clear()
-            p.foodLevel = 20
-            p.health = 20.0
-            p.gameMode = GameMode.ADVENTURE
-            val loc: Location = Bukkit.getWorld("World")!!.spawnLocation
-            p.teleport(loc)
-            lobbySetup(p)
+            leave(p)
 
             if(world.playerCount != 0) return
             Bukkit.unloadWorld(world, false)
@@ -198,6 +193,23 @@ class Utils(private val world: World) {
             meta2.lore(mutableListOf(Component.text("Right click to join the queue!").color(NamedTextColor.YELLOW)))
             bamboo.itemMeta = meta2
             p.inventory.addItem(bamboo)
+
+            val trident = ItemStack(Material.TRIDENT)
+            val meta3 = trident.itemMeta
+            meta3.isUnbreakable = true
+            meta3.displayName(Component.text("Join FFA").color(NamedTextColor.DARK_PURPLE).decorate(TextDecoration.BOLD))
+            meta3.lore(mutableListOf(Component.text("Right click to join the FFA(Free for all) Gamemode!").color(NamedTextColor.AQUA)))
+            trident.itemMeta = meta3
+            p.inventory.addItem(trident)
+        }
+        fun leave(p: Player){
+            p.inventory.clear()
+            p.foodLevel = 20
+            p.health = 20.0
+            p.gameMode = GameMode.ADVENTURE
+            val loc: Location = Bukkit.getWorld("world")!!.spawnLocation
+            p.teleport(loc)
+            lobbySetup(p)
         }
     }
 

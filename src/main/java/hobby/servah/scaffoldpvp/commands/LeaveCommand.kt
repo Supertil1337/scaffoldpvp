@@ -19,7 +19,10 @@ class LeaveCommand : CommandExecutor {
             sender.sendMessage(Component.text("Bitte benutze das Barrier Item in deiner Hotbar!").color(NamedTextColor.BLUE))
             return false
         }
-
+        if(sender.world.name == "FFAScaffoldPvP"){
+            Utils.leave(sender)
+            return true
+        }
         val list = world.players
         list.remove(sender)
         for(p in list){

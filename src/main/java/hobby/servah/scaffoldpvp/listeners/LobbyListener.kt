@@ -60,9 +60,16 @@ class LobbyListener(val plugin: Scaffoldpvp) : Listener {
     fun onInteract(e: PlayerInteractEvent){
         if(e.player.world.name != "world") return
         val p = e.player
-        if(p.itemInHand.type != Material.BAMBOO) return
         if(!e.action.isRightClick) return
         if(e.hand == EquipmentSlot.OFF_HAND) return
+
+        if(p.itemInHand.type == Material.TRIDENT){
+            plugin.ffa?.join(p)
+            return
+        }
+
+        if(p.itemInHand.type != Material.BAMBOO) return
+
         //queuedplayer variable
         //wenn null aktuellen spieler mit uuid hinzufügen
         //ansonsten gequeuten spieler holen mit bukkit.getplayer() und sicher gehen, dass nicht null weil vielleicht offline
