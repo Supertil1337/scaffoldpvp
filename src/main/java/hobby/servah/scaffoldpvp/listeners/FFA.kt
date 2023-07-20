@@ -25,8 +25,17 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.persistence.PersistentDataContainer
+import org.bukkit.persistence.PersistentDataType
 import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.scoreboard.Criteria
+import org.bukkit.scoreboard.DisplaySlot
+import org.bukkit.scoreboard.Objective
+import org.bukkit.scoreboard.RenderType
+import org.bukkit.scoreboard.Score
+import org.bukkit.scoreboard.Scoreboard
 import java.util.*
+import javax.naming.Name
 import kotlin.math.floor
 
 class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
@@ -99,6 +108,7 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
     fun leave(e: PlayerQuitEvent) {
         if(e.player.world != world) return
         val p = e.player
+        p.scoreboard = Bukkit.getScoreboardManager().newScoreboard
         Utils.leave(p)
     }
 
@@ -117,7 +127,29 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
         )
 
          */
-        Bukkit.broadcast(Component.text("${p.name} died!").color(NamedTextColor.RED))
+        val data: PersistentDataContainer = e.player.persistentDataContainer
+        data.set(NamespacedKey(plugin, "Deaths"), PersistentDataType.INTEGER,
+            data.get(NamespacedKey(plugin, "Deaths"), PersistentDataType.INTEGER)?.plus(1)!!
+        )
+        val killer = e.entity.killer
+        if(killer != null){
+            val data2: PersistentDataContainer = killer.persistentDataContainer
+            val oldKills = data2.get(NamespacedKey(plugin, "Kills"), PersistentDataType.INTEGER)
+            data2.set(NamespacedKey(plugin, "Kills"), PersistentDataType.INTEGER,
+                data2.get(NamespacedKey(plugin, "Kills"), PersistentDataType.INTEGER)?.plus(1)!!
+            )
+            killer.scoreboard.resetScores("Kills: $oldKills")
+            val scoreboard = killer.scoreboard
+            val score: Score? = scoreboard.getObjective("Stats")?.getScore("Kills: ${oldKills?.plus(1)}")
+            score?.score = 2
+            killer.scoreboard = scoreboard
+        }
+
+        //Bukkit.broadcast(Component.text("${p.name} died!").color(NamedTextColor.RED))
+        for(p1 in world.players){
+            p1.sendMessage(Component.text("${p.name} died!").color(NamedTextColor.RED))
+        }
+        p.scoreboard = Bukkit.getScoreboardManager().newScoreboard
         Utils.leave(p)
     }
 
@@ -177,6 +209,25 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
         canShoot[p.uniqueId] = true
         utils.scaffold[p.uniqueId] = false
         clickListener.allowed[p.uniqueId] = true
+        if(!p.persistentDataContainer.has(NamespacedKey(plugin, "Kills"), PersistentDataType.INTEGER))
+            p.persistentDataContainer.set(NamespacedKey(plugin, "Kills"), PersistentDataType.INTEGER, 0)
+        if(!p.persistentDataContainer.has(NamespacedKey(plugin, "Deaths"), PersistentDataType.INTEGER))
+            p.persistentDataContainer.set(NamespacedKey(plugin, "Deaths"), PersistentDataType.INTEGER, 0)
+
+        val scoreboard: Scoreboard = Bukkit.getScoreboardManager().newScoreboard
+
+        val objective: Objective = scoreboard.registerNewObjective("Stats", Criteria.DUMMY, "Your FFA Statistics", RenderType.INTEGER)
+        objective.displaySlot = DisplaySlot.SIDEBAR
+        val kills = p.persistentDataContainer.get(NamespacedKey(plugin, "Kills"), PersistentDataType.INTEGER)
+        val killScore: Score = objective.getScore("Kills: $kills")
+        val deaths = p.persistentDataContainer.get(NamespacedKey(plugin, "Deaths"), PersistentDataType.INTEGER)
+        val deathScore: Score = objective.getScore("Deaths: $deaths")
+
+        killScore.score = 2
+        deathScore.score = 1
+
+        p.scoreboard = scoreboard
+
 
         val min = -25
         val max = 25
