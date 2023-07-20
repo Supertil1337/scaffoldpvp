@@ -37,6 +37,7 @@ import org.bukkit.scoreboard.Scoreboard
 import java.util.*
 import javax.naming.Name
 import kotlin.math.floor
+import kotlin.math.roundToInt
 
 class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
     private val canShoot = HashMap<UUID, Boolean>()
@@ -139,9 +140,13 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
                 data2.get(NamespacedKey(plugin, "Kills"), PersistentDataType.INTEGER)?.plus(1)!!
             )
             killer.scoreboard.resetScores("Kills: $oldKills")
+            val deaths = data2.get(NamespacedKey(plugin, "Deaths"), PersistentDataType.INTEGER)
+            killer.scoreboard.resetScores("K/D: ${oldKills!! / deaths!!}")
             val scoreboard = killer.scoreboard
-            val score: Score? = scoreboard.getObjective("Stats")?.getScore("Kills: ${oldKills?.plus(1)}")
-            score?.score = 2
+            val kills: Score? = scoreboard.getObjective("Stats")?.getScore("Kills: ${oldKills.plus(1)}")
+            kills?.score = 3
+            val kd = scoreboard.getObjective("Stats")?.getScore("K/D: ${(oldKills + 1) / deaths}")
+            kd?.score = 1
             killer.scoreboard = scoreboard
         }
 
@@ -222,9 +227,11 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
         val killScore: Score = objective.getScore("Kills: $kills")
         val deaths = p.persistentDataContainer.get(NamespacedKey(plugin, "Deaths"), PersistentDataType.INTEGER)
         val deathScore: Score = objective.getScore("Deaths: $deaths")
+        val kdScore = objective.getScore("K/D: ${(kills!!.toFloat().div(deaths?.toFloat()!!)).times(100).roundToInt().toFloat() / 100}")
 
-        killScore.score = 2
-        deathScore.score = 1
+        killScore.score = 3
+        deathScore.score = 2
+        kdScore.score = 1
 
         p.scoreboard = scoreboard
 
