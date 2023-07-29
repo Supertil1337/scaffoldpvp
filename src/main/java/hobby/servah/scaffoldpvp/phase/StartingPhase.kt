@@ -31,6 +31,7 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
         val wb = world.worldBorder
         wb.center = world.spawnLocation
         wb.size = 100.0
+        wb.damageBuffer = 0.5
         for(x in -50..50){
             for(z in -50..50){
                 world.setBlockData(Location(world, x.toDouble(), -20.0, z.toDouble()), Material.BARRIER.createBlockData())
