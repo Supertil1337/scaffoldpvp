@@ -56,7 +56,7 @@ class EndPhase(private val world: World, private val utils: Utils, plugin: Scaff
             if(e.item?.type == Material.BARRIER){
                 //leave
                 for(p in list) p.sendMessage(Component.text(e.player.name + " möchte nicht nochmal spielen!").color(NamedTextColor.DARK_GRAY))
-                for(p in world.players) Utils.playerLeaveDuelWorld(world, p)
+                for(p in world.players) Utils.playerLeaveDuelWorld(world, p, plugin!!)
             }
             else if(e.item?.type  == Material.DIAMOND_SWORD){
                 if(playAgain[list[0].uniqueId] == true){
@@ -140,7 +140,7 @@ class EndPhase(private val world: World, private val utils: Utils, plugin: Scaff
         val list = world.players
         for (p1 in list) {
             p.sendMessage(Component.text(e.player.name + " möchte nicht nochmal spielen!").color(NamedTextColor.DARK_GRAY))
-            Utils.playerLeaveDuelWorld(world, p1)
+            Utils.playerLeaveDuelWorld(world, p1, plugin!!)
         }
     }
 }

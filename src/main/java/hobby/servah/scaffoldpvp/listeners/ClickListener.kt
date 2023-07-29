@@ -16,10 +16,13 @@ import java.util.UUID
 
 class ClickListener(private val plugin: Scaffoldpvp, private val utils: Utils, private val world: World) : Listener {
 
-    var task : BukkitTask? = Scaffold(utils, plugin).runTaskTimer(plugin, 1, 1)
+    var blockTypes = HashMap<UUID, Material>()
+    var task : BukkitTask? = Scaffold(utils, plugin, blockTypes).runTaskTimer(plugin, 1, 1)
 
     //wird von PvPPhase gechanged, wenn ein Spieler Schaden weil dann kurz Scaffold disabled wird
     var allowed = HashMap<UUID, Boolean>()
+
+
 
 
     init {

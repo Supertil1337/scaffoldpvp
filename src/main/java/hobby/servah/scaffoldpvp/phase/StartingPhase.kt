@@ -79,6 +79,7 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
     fun onJoin(e: PlayerJoinEvent){
         if(e.player.world != world) return
         utils.setupPlayer(plugin!!, e.player)
+
     }
 
     @EventHandler
@@ -152,7 +153,7 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
                     Component.text("Your opponent gave up!").color(NamedTextColor.BLUE)
                 )
             )
-            Utils.playerLeaveDuelWorld(world, p)
+            Utils.playerLeaveDuelWorld(world, p, plugin!!)
         }
     }
     @EventHandler

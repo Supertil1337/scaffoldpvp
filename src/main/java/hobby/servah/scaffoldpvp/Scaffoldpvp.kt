@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.WorldCreator
 import org.bukkit.plugin.PluginManager
@@ -19,11 +20,21 @@ import java.lang.Exception
 class Scaffoldpvp : JavaPlugin() {
     var ffaworld: World? = null
     public var ffa: FFA? = null
+    companion object{
+        val duelLobbyName = "world"
+    }
+
+
+    val blocks = mapOf(0 to Material.DIAMOND_BLOCK, 1 to Material.STONE_BRICKS, 2 to Material.CHISELED_STONE_BRICKS, 3 to Material.PURPUR_BLOCK,
+        4 to Material.PRISMARINE, 5 to Material.DARK_PRISMARINE, 6 to Material.GILDED_BLACKSTONE, 7 to Material.RED_NETHER_BRICKS, 8 to Material.BRICKS,
+        9 to Material.BONE_BLOCK, 10 to Material.BLUE_ICE, 11 to Material.END_STONE_BRICKS, 12 to Material.IRON_BLOCK, 13 to Material.COAL_BLOCK,
+        14 to Material.QUARTZ_BLOCK)
     override fun onEnable() {
+
         // Plugin startup logic
         logger.info("Started Scaffold")
         val pluginManager : PluginManager = Bukkit.getPluginManager()
-        getCommand("leave")?.setExecutor(LeaveCommand())
+        getCommand("leave")?.setExecutor(LeaveCommand(this))
         getCommand("duel")?.setExecutor(DuelCommand(this))
         //TODO Tab complete einbauen oder brauch ich nicht?
         //getCommand("duel")?.tabCompleter = TabComplete()
@@ -55,7 +66,7 @@ class Scaffoldpvp : JavaPlugin() {
         logger.info("Teleporting all players to the lobby and removing the duel worlds")
         for(w in Bukkit.getWorlds()){
             if(w.name.startsWith("Duel")) {
-                for (p in w.players) Utils.playerLeaveDuelWorld(w, p)
+                for (p in w.players) Utils.playerLeaveDuelWorld(w, p, this)
             }
         }
         if(ffaworld != null){
@@ -64,9 +75,9 @@ class Scaffoldpvp : JavaPlugin() {
                 p.foodLevel = 20
                 p.health = 20.0
                 p.gameMode = GameMode.ADVENTURE
-                val loc: Location = Bukkit.getWorld("world")!!.spawnLocation
+                val loc: Location = Bukkit.getWorld(duelLobbyName)!!.spawnLocation
                 p.teleport(loc)
-                Utils.lobbySetup(p)
+                Utils.lobbySetup(p, this)
             }
             Bukkit.unloadWorld(ffaworld!!, false)
             FileUtils.deleteDirectory(File(ffaworld!!.name))

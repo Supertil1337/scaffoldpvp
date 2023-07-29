@@ -14,6 +14,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
 import java.io.File
 import java.io.IOException
@@ -109,14 +110,14 @@ class Utils(val world: World) {
         }
     }
     companion object{
-        fun playerLeaveDuelWorld(world: World, p: Player){
+        fun playerLeaveDuelWorld(world: World, p: Player, plugin: Scaffoldpvp){
             //war zum Testen, weil random noclassdeffounderror aber kam nicht wieder
             //Bukkit.broadcast(Component.text(world.name))
             if(!world.name.startsWith("Duel")){
                 p.sendMessage(Component.text("You're currently not in a duel!").color(NamedTextColor.RED))
                 return
             }
-            leave(p)
+            leave(p, plugin)
 
             if(world.playerCount != 0) return
             Bukkit.unloadWorld(world, false)
@@ -169,9 +170,13 @@ class Utils(val world: World) {
             val players = arrayOf(p1, p2)
 
             //PhaseManager übernimmt
-            DuelCommand.phaseManagers[newWorld.name] = PhaseManager(plugin, newWorld, players)
+            phaseManagers[newWorld.name] = PhaseManager(plugin, newWorld, players)
         }
-        fun lobbySetup(p: Player){
+        fun lobbySetup(p: Player, plugin: Scaffoldpvp){
+            if(!p.persistentDataContainer.has(NamespacedKey(plugin, "Block")))
+                p.persistentDataContainer.set(NamespacedKey(plugin, "Block"), PersistentDataType.INTEGER, 0)
+
+
             p.health = 20.0
             p.activePotionEffects.clear()
             p.inventory.clear()
@@ -201,15 +206,23 @@ class Utils(val world: World) {
             meta3.lore(mutableListOf(Component.text("Right click to join the FFA(Free for all) Gamemode!").color(NamedTextColor.AQUA)))
             trident.itemMeta = meta3
             p.inventory.addItem(trident)
+
+            val diaBlock = ItemStack(Material.DIAMOND_BLOCK)
+            val meta4 = diaBlock.itemMeta
+            meta4.isUnbreakable = true
+            meta4.displayName(Component.text("Choose a block").color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD))
+            meta4.lore(mutableListOf(Component.text("Right click to choose a block for the scaffolding!").color(NamedTextColor.DARK_GREEN)))
+            diaBlock.itemMeta = meta4
+            p.inventory.addItem(diaBlock)
         }
-        fun leave(p: Player){
+        fun leave(p: Player, plugin: Scaffoldpvp){
             p.inventory.clear()
             p.foodLevel = 20
             p.health = 20.0
             p.gameMode = GameMode.ADVENTURE
-            val loc: Location = Bukkit.getWorld("world")!!.spawnLocation
+            val loc: Location = Bukkit.getWorld(Scaffoldpvp.duelLobbyName)!!.spawnLocation
             p.teleport(loc)
-            lobbySetup(p)
+            lobbySetup(p, plugin)
         }
     }
 

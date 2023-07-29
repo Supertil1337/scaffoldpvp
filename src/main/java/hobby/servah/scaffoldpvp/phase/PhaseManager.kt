@@ -7,10 +7,12 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.title.Title
 import org.bukkit.Bukkit
+import org.bukkit.NamespacedKey
 import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
+import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.PluginManager
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
@@ -68,6 +70,9 @@ class PhaseManager(val plugin: Scaffoldpvp, private val duelWorld: World, player
             }
 
         }.runTaskTimer(plugin, 170 * 20, 20))
+
+        //persistent data "block" zuweisen nach parse durch blocks map
+        for(p in players) clickListener!!.blockTypes[p.uniqueId] = plugin.blocks[p.persistentDataContainer.get(NamespacedKey(plugin, "Block"), PersistentDataType.INTEGER)]!!
     }
 
 

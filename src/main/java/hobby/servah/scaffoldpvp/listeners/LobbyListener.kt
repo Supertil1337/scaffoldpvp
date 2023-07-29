@@ -9,6 +9,7 @@ import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -19,8 +20,10 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.event.player.*
 import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
 import java.util.UUID
 import javax.inject.Named
 import javax.naming.Name
@@ -29,7 +32,7 @@ class LobbyListener(val plugin: Scaffoldpvp) : Listener {
     var queuedPlayer: UUID? = null
     @EventHandler
     fun onHit(e: PlayerInteractEntityEvent){
-        if(e.player.world.name != "world") return
+        if(e.player.world.name != Scaffoldpvp.duelLobbyName) return
         val p = e.rightClicked
         if(p !is Player) return
         if(e.player.itemInHand.type != Material.NETHERITE_HOE) return
@@ -39,7 +42,7 @@ class LobbyListener(val plugin: Scaffoldpvp) : Listener {
     fun onHit2(e: EntityDamageByEntityEvent){
         val p = e.entity
         if(p !is Player) return
-        if(p.world.name != "world") return
+        if(p.world.name != Scaffoldpvp.duelLobbyName) return
         val p2 = e.damager
         if(p2 !is Player) return
         if(p2.itemInHand.type != Material.NETHERITE_HOE) return
@@ -47,18 +50,18 @@ class LobbyListener(val plugin: Scaffoldpvp) : Listener {
     }
     @EventHandler
     fun onJoin(e: PlayerJoinEvent){
-        if(e.player.world.name != "world") return
+        if(e.player.world.name != Scaffoldpvp.duelLobbyName) return
         val p = e.player
-        Utils.lobbySetup(p)
+        Utils.lobbySetup(p, plugin)
     }
     @EventHandler
     fun onDamage(e: EntityDamageEvent){
-        if(e.entity.world.name != "world") return
+        if(e.entity.world.name != Scaffoldpvp.duelLobbyName) return
         e.isCancelled = true
     }
     @EventHandler
     fun onInteract(e: PlayerInteractEvent){
-        if(e.player.world.name != "world") return
+        if(e.player.world.name != Scaffoldpvp.duelLobbyName) return
         val p = e.player
         if(!e.action.isRightClick) return
         if(e.hand == EquipmentSlot.OFF_HAND) return
@@ -67,7 +70,13 @@ class LobbyListener(val plugin: Scaffoldpvp) : Listener {
             plugin.ffa?.join(p)
             return
         }
-
+        if(p.itemInHand.type == Material.DIAMOND_BLOCK){
+            val inv: Inventory = Bukkit.createInventory(null, 18, Component.text("Block Customization"))
+            for(block in plugin.blocks.values){
+                inv.addItem(ItemStack(block))
+            }
+            p.openInventory(inv)
+        }
         if(p.itemInHand.type != Material.BAMBOO) return
 
         //queuedplayer variable
@@ -102,7 +111,7 @@ class LobbyListener(val plugin: Scaffoldpvp) : Listener {
 
     @EventHandler
     fun onItemDrop(e: PlayerDropItemEvent) {
-        if(e.player.world.name != "world") return
+        if(e.player.world.name != Scaffoldpvp.duelLobbyName) return
         e.isCancelled = true
     }
 
@@ -110,20 +119,24 @@ class LobbyListener(val plugin: Scaffoldpvp) : Listener {
     fun onItemMoveBetweenInvs(e: InventoryMoveItemEvent) {
         val holder: InventoryHolder? = e.initiator.holder
         if(holder !is Player) return
-        if(holder.world.name != "world") return
+        if(holder.world.name != Scaffoldpvp.duelLobbyName) return
         e.isCancelled = true
 
     }
 
     @EventHandler
     fun onItemClick(e: InventoryClickEvent) {
-        if(e.whoClicked.world.name != "world") return
+        if(e.whoClicked.world.name != Scaffoldpvp.duelLobbyName) return
         if(e.cursor === null) return
+        if(e.view.title() == Component.text("Block Customization") && e.currentItem != null){
+            e.whoClicked.persistentDataContainer.set(NamespacedKey(plugin, "Block"), PersistentDataType.INTEGER, e.slot)
+            e.inventory.close()
+        }
         e.isCancelled = true
     }
     @EventHandler
     fun onPickUp(e : PlayerAttemptPickupItemEvent) {
-        if(e.player.world.name != "world") return
+        if(e.player.world.name != Scaffoldpvp.duelLobbyName) return
         e.item.remove()
         e.isCancelled = true
     }

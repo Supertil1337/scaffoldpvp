@@ -47,7 +47,7 @@ class DuelCommand(val plugin: Scaffoldpvp) : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
         if (sender !is Player) return false
 
-        if(sender.world.name != "world"){
+        if(sender.world.name != Scaffoldpvp.duelLobbyName){
             sender.sendMessage(Component.text("Du kannst keine Anfrage schicken, während du in einem Duel bist!").color(NamedTextColor.RED))
             return false
         }

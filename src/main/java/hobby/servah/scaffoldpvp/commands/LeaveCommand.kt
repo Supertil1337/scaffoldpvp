@@ -1,5 +1,6 @@
 package hobby.servah.scaffoldpvp.commands
 
+import hobby.servah.scaffoldpvp.Scaffoldpvp
 import hobby.servah.scaffoldpvp.Utils
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -10,7 +11,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-class LeaveCommand : CommandExecutor {
+class LeaveCommand(val plugin: Scaffoldpvp) : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>?): Boolean {
         if(sender !is Player) return false
         val world: World = sender.world
@@ -20,7 +21,7 @@ class LeaveCommand : CommandExecutor {
             return false
         }
         if(sender.world.name == "FFAScaffoldPvP"){
-            Utils.leave(sender)
+            Utils.leave(sender, plugin)
             return true
         }
         val list = world.players
@@ -33,7 +34,7 @@ class LeaveCommand : CommandExecutor {
                 )
             )
         }
-        for (p in world.players) Utils.playerLeaveDuelWorld(world, p)
+        for (p in world.players) Utils.playerLeaveDuelWorld(world, p, plugin)
         return false;
     }
 }

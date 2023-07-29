@@ -52,6 +52,7 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
                 world.setBlockData(Location(world, x.toDouble(), -10.0, z.toDouble()), Material.BARRIER.createBlockData())
             }
         }
+
     }
 
     @EventHandler
@@ -71,7 +72,7 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
     @EventHandler
     fun onBlockBreak(e : BlockBreakEvent) {
         if(e.player.world != world) return
-        if(e.block.blockData.material == Material.DIAMOND_BLOCK) return
+        if(e.block.blockData.material != Material.GRASS_BLOCK && e.block.blockData.material != Material.DIRT) return
         e.isCancelled = true
     }
 
@@ -110,7 +111,7 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
         if(e.player.world != world) return
         val p = e.player
         p.scoreboard = Bukkit.getScoreboardManager().newScoreboard
-        Utils.leave(p)
+        Utils.leave(p, plugin)
     }
 
     //brauch ich das überhaupt noch?, glaub schon lol
@@ -155,7 +156,7 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
             p1.sendMessage(Component.text("${p.name} died!").color(NamedTextColor.RED))
         }
         p.scoreboard = Bukkit.getScoreboardManager().newScoreboard
-        Utils.leave(p)
+        Utils.leave(p, plugin)
     }
 
     @EventHandler
@@ -218,6 +219,10 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
             p.persistentDataContainer.set(NamespacedKey(plugin, "Kills"), PersistentDataType.INTEGER, 0)
         if(!p.persistentDataContainer.has(NamespacedKey(plugin, "Deaths"), PersistentDataType.INTEGER))
             p.persistentDataContainer.set(NamespacedKey(plugin, "Deaths"), PersistentDataType.INTEGER, 0)
+
+        //Bukkit.broadcastMessage(p.persistentDataContainer.get(NamespacedKey(plugin, "Block"), PersistentDataType.INTEGER).toString())
+
+        clickListener.blockTypes[p.uniqueId] = plugin.blocks[p.persistentDataContainer.get(NamespacedKey(plugin, "Block"), PersistentDataType.INTEGER)]!!
 
         val scoreboard: Scoreboard = Bukkit.getScoreboardManager().newScoreboard
 

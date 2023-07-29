@@ -62,7 +62,7 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
     @EventHandler
     fun onBlockBreak(e : BlockBreakEvent) {
         if(e.player.world != world) return
-        if(e.block.blockData.material == Material.DIAMOND_BLOCK) return
+        if(e.block.blockData.material != Material.GRASS_BLOCK && e.block.blockData.material != Material.DIRT) return
         e.isCancelled = true
     }
 
@@ -107,7 +107,7 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
                     Component.text("Your opponent gave up!").color(NamedTextColor.BLUE)
                 )
             )
-            Utils.playerLeaveDuelWorld(world, p)
+            Utils.playerLeaveDuelWorld(world, p, plugin!!)
         }
 
     }
