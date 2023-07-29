@@ -19,24 +19,26 @@ import org.bukkit.scheduler.BukkitTask
 
 abstract class Phase(val plugin: Scaffoldpvp?) : Listener {
     var type: String = ""
-    var tasks: List<BukkitTask> = ArrayList<BukkitTask>()
+    var tasks: List<BukkitTask> = ArrayList()
     abstract fun disable()
     abstract fun getNextPhase()
 }
 
-class PhaseManager(val plugin: Scaffoldpvp, private val duelWorld: World, players: Array<Player>){
+class PhaseManager(val plugin: Scaffoldpvp, duelWorld: World, players: Array<Player>){
 
     private val utils: Utils = Utils(duelWorld)
     var currentPhase: Phase? = StartingPhase(plugin, duelWorld, utils, this, players)
     var clickListener : ClickListener? = ClickListener(plugin, utils, duelWorld)
     private val pluginManager: PluginManager = Bukkit.getPluginManager()
     val world: World
-    var tasks: List<BukkitTask> = ArrayList<BukkitTask>()
+    var tasks: List<BukkitTask> = ArrayList()
 
     init {
+        //initialize everything
         changePhase(currentPhase!!, plugin)
         world = duelWorld
         pluginManager.registerEvents(clickListener!!, plugin)
+
 
         tasks = tasks.plus(object : BukkitRunnable(){
             override fun run() {

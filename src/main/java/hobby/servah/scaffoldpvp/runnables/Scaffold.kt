@@ -12,11 +12,12 @@ import kotlin.collections.HashMap
 
 class Scaffold(private val utils: Utils, private val plugin: Scaffoldpvp, private val blockTypes: HashMap<UUID, Material>) : BukkitRunnable() {
     override fun run() {
-        for(player in Bukkit.getOnlinePlayers()){
-            if(utils.scaffold.keys.contains(player.uniqueId) && utils.scaffold.getValue(player.uniqueId)){
-                val loc : Location = player.location.subtract(Vector(0, 1, 0))
+        for(player in utils.scaffold.keys){
+            val p = Bukkit.getPlayer(player) ?: return
+            if(utils.scaffold.getValue(p.uniqueId)){
+                val loc : Location = p.location.subtract(Vector(0, 1, 0))
                 if(loc.block.type == Material.AIR){
-                    loc.block.type = blockTypes[player.uniqueId]!!
+                    loc.block.type = blockTypes[p.uniqueId]!!
                     //nur im FFA Gamemode
                     if(utils.world.name != "FFAScaffoldPvP") return
                     object : BukkitRunnable(){

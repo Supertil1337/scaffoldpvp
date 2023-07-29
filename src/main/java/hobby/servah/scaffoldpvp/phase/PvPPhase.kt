@@ -30,18 +30,23 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
     private val canShoot = HashMap<UUID, Boolean>()
 
     init{
+        //Initialize everything
         type = "PvP"
         for(p in world.players){
             canShoot[p.uniqueId] = true
         }
         world.worldBorder.setSize(10.0, 120L)
-        object : BukkitRunnable() {
+        //wird hoffentlich in PhaseManager geregelt
+        //Start Timer for Draw
+        /*object : BukkitRunnable() {
             override fun run() {
                 for(p in world.players) p.showTitle(Title.title(Component.text("Draw").color(NamedTextColor.YELLOW), Component.text("Time is up!").color(NamedTextColor.BLUE)))
                 utils.endMatch(world.players, phaseManager, plugin!!)
             }
 
         }.runTaskLater(plugin!!, 6000L)
+
+         */
     }
     override fun disable() {
         //TODO("Not yet implemented")
@@ -112,8 +117,6 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
         }
 
     }
-
-    //brauch ich das überhaupt noch?, glaub schon lol
     @EventHandler
     fun onDeath(e: PlayerDeathEvent){
         if(e.player.world != world) return
@@ -134,6 +137,7 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
         list.add(p)
         utils.endMatch(list, phaseManager, plugin!!)
     }
+    //Shoot bow or prevent it when on cooldown
     @EventHandler
     fun shoot(e: EntityShootBowEvent){
         if(e.entity.world != world) return
@@ -160,25 +164,7 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
             }
         }.runTaskTimer(plugin!!, 0L, 20L)
     }
-
-    //funktioniert nicht :(
-    /*@EventHandler
-    fun onTryShootBow(e: PlayerInteractEvent){
-        if(e.player.world != world) return
-        Bukkit.broadcast(Component.text("Kleiner test1"))
-        if(e.item?.type != Material.BOW) return
-        Bukkit.broadcast(Component.text("Kleiner test2"))
-        if(canShoot[e.player.uniqueId] == true) return
-        Bukkit.broadcast(Component.text("Kleiner test3"))
-        //Schade, scheint nicht zu funktionieren
-        //e.setUseItemInHand(Event.Result.DENY)
-
-        Bukkit.broadcast(Component.text("Kleiner test"))
-        e.isCancelled = true
-    }
-
-     */
-
+    //reduce fall damage and temporarily disable scaffold
     @EventHandler
     fun damage(e: EntityDamageEvent) {
         if(e.entity.world != world) return
@@ -193,13 +179,11 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
             return
         }
         if(!phaseManager.clickListener?.allowed?.get(p.uniqueId)!!)
-        //Bukkit.broadcast(Component.text("test1"))
         phaseManager.clickListener?.allowed?.set(p.uniqueId, false)
         val scaffold = utils.scaffold[p.uniqueId]
         utils.scaffold[p.uniqueId] = false
         object : BukkitRunnable(){
             override fun run() {
-                //Bukkit.broadcast(Component.text("test2"))
                 utils.scaffold[p.uniqueId] = scaffold!!
                 phaseManager.clickListener?.allowed?.set(p.uniqueId, true)
             }

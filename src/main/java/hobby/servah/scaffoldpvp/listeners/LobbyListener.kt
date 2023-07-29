@@ -67,10 +67,12 @@ class LobbyListener(val plugin: Scaffoldpvp) : Listener {
         if(!e.action.isRightClick) return
         if(e.hand == EquipmentSlot.OFF_HAND) return
 
+        //FFA
         if(p.itemInHand.type == Material.TRIDENT){
             plugin.ffa?.join(p)
             return
         }
+        //Block Customization
         if(p.itemInHand.type == Material.DIAMOND_BLOCK){
             val inv: Inventory = Bukkit.createInventory(null, 18, Component.text("Block Customization"))
             for(block in plugin.blocks.values){
@@ -78,12 +80,8 @@ class LobbyListener(val plugin: Scaffoldpvp) : Listener {
             }
             p.openInventory(inv)
         }
+        //Queue
         if(p.itemInHand.type != Material.BAMBOO) return
-
-        //queuedplayer variable
-        //wenn null aktuellen spieler mit uuid hinzufügen
-        //ansonsten gequeuten spieler holen mit bukkit.getplayer() und sicher gehen, dass nicht null weil vielleicht offline
-        //dann in spiel warpen und queuedplayer = null
 
         if(queuedPlayer == p.uniqueId){
             queuedPlayer = null

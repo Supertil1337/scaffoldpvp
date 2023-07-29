@@ -33,25 +33,19 @@ class Utils(val world: World) {
 
     var scaffold = HashMap<UUID, Boolean>()
 
-    fun setupPlayer(plugin: Scaffoldpvp, p: Player) {
-
+    fun setupPlayer(p: Player) {
         scaffold[p.uniqueId] = false
-
-
-
-
         if(firstSpawn){
             spawn1.let { p.teleport(it) }
-            //p.teleport(spawn1!!)
             firstSpawn = false
         }
         else{
             spawn2.let { p.teleport(it) }
             firstSpawn = true
         }
-
-
-
+        setupPlayer2(p)
+    }
+    fun setupPlayer2(p: Player){
         p.foodLevel = 20
         p.health = 20.0
         p.gameMode = GameMode.SURVIVAL
@@ -106,13 +100,10 @@ class Utils(val world: World) {
             p.inventory.setItem(0, playAgain)
 
             phaseManager.changePhase(EndPhase(world, this, plugin), plugin)
-            //Utils.playerLeaveDuelWorld(world, p1)
         }
     }
     companion object{
         fun playerLeaveDuelWorld(world: World, p: Player, plugin: Scaffoldpvp){
-            //war zum Testen, weil random noclassdeffounderror aber kam nicht wieder
-            //Bukkit.broadcast(Component.text(world.name))
             if(!world.name.startsWith("Duel")){
                 p.sendMessage(Component.text("You're currently not in a duel!").color(NamedTextColor.RED))
                 return
@@ -141,6 +132,7 @@ class Utils(val world: World) {
             phaseManagers[world.name] = null
         }
         fun startMatch(p1: Player, p2: Player, plugin: Scaffoldpvp){
+            //copy world
             var counter = 0
             try {
                 val sourceDirectory = File("ScaffoldPvP")
@@ -155,13 +147,11 @@ class Utils(val world: World) {
                     }
                 }
                 loop()
-
             }
             catch (e: IOException){
                 e.printStackTrace()
             }
-
-
+            //create/register world
             val newWorld = Bukkit.createWorld(WorldCreator("Duel$counter"))
             if(newWorld == null){
                 p1.sendMessage("joo dat is null");

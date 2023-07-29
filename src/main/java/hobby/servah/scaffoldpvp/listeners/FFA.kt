@@ -40,12 +40,14 @@ import kotlin.math.floor
 import kotlin.math.roundToInt
 
 class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
+    //Contains if the players can shoot or if they can't because they shot less than 3 seconds ago
     private val canShoot = HashMap<UUID, Boolean>()
     val utils: Utils = Utils(world)
     val clickListener: ClickListener = ClickListener(plugin, utils, world)
 
     init {
         Bukkit.getPluginManager().registerEvents(clickListener, plugin)
+        //Setup world boundaries
         world.worldBorder.size = 200.0
         for(x in -100..100){
             for(z in -100..100){
@@ -115,25 +117,19 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
         Utils.leave(p, plugin)
     }
 
-    //brauch ich das überhaupt noch?, glaub schon lol
     @EventHandler
     fun onDeath(e: PlayerDeathEvent){
         if(e.player.world != world) return
         val p = e.player
         e.isCancelled = true
-        //vielleicht noch einbauen
-        /*p.showTitle(
-            Title.title(
-                Component.text("You died").color(NamedTextColor.RED), Component.text("You lost the fight!").color(
-                    NamedTextColor.BLUE)
-            )
-        )
 
-         */
+        //Stats saven
         val data: PersistentDataContainer = e.player.persistentDataContainer
         data.set(NamespacedKey(plugin, "Deaths"), PersistentDataType.INTEGER,
             data.get(NamespacedKey(plugin, "Deaths"), PersistentDataType.INTEGER)?.plus(1)!!
         )
+
+        //Scufftes Scoreboard Zeug
         val killer = e.entity.killer
         if(killer != null){
             val data2: PersistentDataContainer = killer.persistentDataContainer
@@ -154,15 +150,13 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
 
             killer.health = 20.0
         }
-
-        //Bukkit.broadcast(Component.text("${p.name} died!").color(NamedTextColor.RED))
         for(p1 in world.players){
             p1.sendMessage(Component.text("${p.name} died!").color(NamedTextColor.RED))
         }
         p.scoreboard = Bukkit.getScoreboardManager().newScoreboard
         Utils.leave(p, plugin)
     }
-
+    //Shoot bow or prevent it when on cooldown
     @EventHandler
     fun shoot(e: EntityShootBowEvent){
         if(e.entity.world != world) return
@@ -189,7 +183,7 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
             }
         }.runTaskTimer(plugin, 0L, 20L)
     }
-
+    //reduce fall damage and temporarily disable scaffold
     @EventHandler
     fun damage(e: EntityDamageEvent) {
         if(e.entity.world != world) return
@@ -216,6 +210,7 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
         }.runTaskLater(plugin, 20L)
     }
     fun join(p: Player){
+        //setup data
         canShoot[p.uniqueId] = true
         utils.scaffold[p.uniqueId] = false
         clickListener.allowed[p.uniqueId] = true
@@ -223,13 +218,11 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
             p.persistentDataContainer.set(NamespacedKey(plugin, "Kills"), PersistentDataType.INTEGER, 0)
         if(!p.persistentDataContainer.has(NamespacedKey(plugin, "Deaths"), PersistentDataType.INTEGER))
             p.persistentDataContainer.set(NamespacedKey(plugin, "Deaths"), PersistentDataType.INTEGER, 0)
-
-        //Bukkit.broadcastMessage(p.persistentDataContainer.get(NamespacedKey(plugin, "Block"), PersistentDataType.INTEGER).toString())
-
         clickListener.blockTypes[p.uniqueId] = plugin.blocks[p.persistentDataContainer.get(NamespacedKey(plugin, "Block"), PersistentDataType.INTEGER)]!!
 
         p.inventory.heldItemSlot = 0
 
+        //setup scoreboard
         val scoreboard: Scoreboard = Bukkit.getScoreboardManager().newScoreboard
 
         val objective: Objective = scoreboard.registerNewObjective("Stats", Criteria.DUMMY, "Your FFA Statistics", RenderType.INTEGER)
@@ -246,49 +239,13 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
 
         p.scoreboard = scoreboard
 
-
+        //Spawn Location
         val min = -25
         val max = 25
         val x = floor(Math.random() *(max - min + 1) + min)
         val z = floor(Math.random() *(max - min + 1) + min)
         p.teleport(Location(world, world.spawnLocation.x + x, world.spawnLocation.y, world.spawnLocation.z  + z))
 
-        //von utils gecopied
-        p.foodLevel = 20
-        p.health = 20.0
-        p.gameMode = GameMode.SURVIVAL
-        //give the player all the necessary items
-        p.inventory.clear()
-        val sword = ItemStack(Material.DIAMOND_SWORD)
-        val meta2 = sword.itemMeta
-        meta2.isUnbreakable = true
-        sword.itemMeta = meta2
-        p.inventory.addItem(sword)
-        val pickaxe = ItemStack(Material.DIAMOND_PICKAXE)
-        val meta: ItemMeta = pickaxe.itemMeta
-        meta.addEnchant(Enchantment.DIG_SPEED, 50, true)
-        meta.isUnbreakable = true
-        pickaxe.itemMeta = meta
-        p.inventory.addItem(pickaxe)
-        val bow = ItemStack(Material.BOW)
-        val meta3 = bow.itemMeta
-        meta3.addEnchant(Enchantment.ARROW_DAMAGE, 1, false)
-        meta3.addEnchant(Enchantment.ARROW_INFINITE, 1, false)
-        meta3.isUnbreakable = true
-        bow.itemMeta = meta3
-        p.inventory.addItem(bow)
-        p.inventory.setItem(9, ItemStack(Material.ARROW, 1))
-        p.inventory.armorContents = arrayOf(
-            ItemStack(Material.DIAMOND_BOOTS), ItemStack(Material.DIAMOND_LEGGINGS),
-            ItemStack(Material.DIAMOND_CHESTPLATE), ItemStack(Material.DIAMOND_HELMET)
-        )
-        val switch = ItemStack(Material.STICK)
-        val meta4 = switch.itemMeta
-        meta4.displayName(Component.text("Switch").color(NamedTextColor.DARK_GREEN))
-        val loreList = ArrayList<TextComponent>()
-        loreList.add(Component.text("Right to click to toggle Scaffold").color(NamedTextColor.DARK_PURPLE))
-        meta4.lore(loreList)
-        switch.itemMeta = meta4
-        p.inventory.setItemInOffHand(switch)
+        utils.setupPlayer2(p)
     }
 }

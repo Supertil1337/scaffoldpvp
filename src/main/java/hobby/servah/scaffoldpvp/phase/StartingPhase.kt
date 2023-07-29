@@ -27,7 +27,7 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
     init {
         type = "Starting"
         utils.firstSpawn = true
-        for (p in players) utils.setupPlayer(plugin!!, p)
+        for (p in players) utils.setupPlayer(p)
         val wb = world.worldBorder
         wb.center = world.spawnLocation
         wb.size = 100.0
@@ -60,12 +60,7 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
     }
 
     override fun disable() {
-        //fckn unnötige funktionen lul                            sind jetzt auch auskommentiert lol
-        /*if(!task.isCancelled){
-            task.cancel()
-        }
 
-         */
     }
 
     override fun getNextPhase() {
@@ -79,7 +74,7 @@ class StartingPhase(plugin : Scaffoldpvp?, private val world : World, private va
     @EventHandler
     fun onJoin(e: PlayerJoinEvent){
         if(e.player.world != world) return
-        utils.setupPlayer(plugin!!, e.player)
+        utils.setupPlayer(e.player)
 
     }
 
