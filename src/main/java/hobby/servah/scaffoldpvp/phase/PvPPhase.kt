@@ -62,6 +62,7 @@ class PvPPhase(plugin: Scaffoldpvp?, private val world: World, private val utils
     @EventHandler
     fun onBlockBreak(e : BlockBreakEvent) {
         if(e.player.world != world) return
+        e.isDropItems = false
         if(e.block.blockData.material != Material.GRASS_BLOCK && e.block.blockData.material != Material.DIRT) return
         e.isCancelled = true
     }
