@@ -147,9 +147,12 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
             val scoreboard = killer.scoreboard
             val kills: Score? = scoreboard.getObjective("Stats")?.getScore("Kills: ${oldKills.plus(1)}")
             kills?.score = 3
-            val kd = scoreboard.getObjective("Stats")?.getScore("K/D: ${(oldKills + 1) / deaths}")
+            killer.scoreboard.resetScores("K/D: ${oldKills.toFloat().div(deaths.toFloat()).times(100).roundToInt().toFloat() / 100}")
+            val kd = scoreboard.getObjective("Stats")?.getScore("K/D: ${oldKills.toFloat().plus(1).div(deaths.toFloat()).times(100).roundToInt().toFloat() / 100}")
             kd?.score = 1
             killer.scoreboard = scoreboard
+
+            killer.health = 20.0
         }
 
         //Bukkit.broadcast(Component.text("${p.name} died!").color(NamedTextColor.RED))
@@ -224,6 +227,8 @@ class FFA(val world: World, val plugin: Scaffoldpvp) : Listener {
         //Bukkit.broadcastMessage(p.persistentDataContainer.get(NamespacedKey(plugin, "Block"), PersistentDataType.INTEGER).toString())
 
         clickListener.blockTypes[p.uniqueId] = plugin.blocks[p.persistentDataContainer.get(NamespacedKey(plugin, "Block"), PersistentDataType.INTEGER)]!!
+
+        p.inventory.heldItemSlot = 0
 
         val scoreboard: Scoreboard = Bukkit.getScoreboardManager().newScoreboard
 
